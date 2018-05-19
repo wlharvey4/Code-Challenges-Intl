@@ -16,7 +16,7 @@ This library allows one to create one JSON file with input arguments and expecte
 
     `[{"params": {"n": 1}, "expected": 1}, {"params": {"n": 2}, "expected": 2}, {"params": {"n": 3}, "expected": "fizz"}]`
 
-    The `params` argument should be an object which the code challenge should be able to accept and use in its implementation.
+    The `params` argument should be an object which the code challenge will accept and use in its implementation.
 
 3. Third, create folders inside this code challenge folder named after the languages, i.e., `javascript`, `ocaml`, `python`, `ruby`, `perl`, etc.
 4. Fourth, create your implementation of the code challenge in each of the languages, inside of their respective folders.  Export the function as appropriate for the language.
