@@ -1,0 +1,7 @@
+[
+  {"params": {"str": "abc"}, "expected": true},
+  {"params": {"str": "aaa"}, "expected": false},
+  {"params": {"str": "abcdefghijklmnopqrstuvwxyz"}, "expected": true},
+  {"params": {"str": "abcdefghijklmnopqrstuvwxyza"}, "expected": false},
+  {"params": {"str": ""}, "expected": true}
+]
