@@ -2,15 +2,16 @@
    fizzbuzz.js
    ====================================================
    CREATED: 2018-05-13
-   VERSION: 1.0.0
-   AUTHOR: wlharvey4
-   ABOUT: Javascript version of Fizzbuzz
-   USAGE: fizzbuzz.js <value>
-   NOTES: The single input parameter is an integer
+   UPDATED: 2018-05-19
+   VERSION: 2.0.0
+   AUTHOR:  wlharvey4
+   ABOUT:   Javascript version of Fizzbuzz
+   USAGE:   fizzbuzz.js <value>
+   NOTES:   The single input parameter is an object
    ----------------------------------------------------
  */
 
-exports.fizzbuzz = n => {
+module.exports = fizzbuzz = ({ n }) => {
   const fizz = !(n % 3),
 	buzz = !(n % 5);
   return (
