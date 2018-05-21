@@ -4,8 +4,8 @@
    check.js
    ====================================================
    CREATED: 2018-05-14
-   UPDATED: 2018-05-19
-   VERSION: 2.0.0
+   UPDATED: 2018-05-21
+   VERSION: 2.1.0
    AUTHOR:  wlharvey4
    ABOUT:   Test program for JavaScript challenges.
    USAGE:   ./check.js <cc>
@@ -21,6 +21,13 @@ const FAILED = 'failed';
 const _JSON = '.json';
 const _JS = '.js';
 
+// Find absolute path to root directory irrespective of path from which executable is called
+const BASE = 'Code-Challenges-Intl';
+const re = new RegExp(BASE);
+const EXEC_PATH = fs.realpathSync('.') // path from which executable is called
+EXEC_PATH.search(re);
+const ROOT_PATH = RegExp.leftContext + BASE;
+
 const reportFailed = (params, result, expected) => {
   console.error('params: ', params, `\nresult: ${result}\nexpected: ${expected}\n`);
 }
@@ -31,14 +38,14 @@ const report = results => {
 
 const load = (cc, type) => {
   try {
-    const ccDir = fs.realpathSync('../' + cc);
+    const ccDir = ROOT_PATH + '/' + cc;
     let ccFile;
     switch (type) {
     case _JSON:
-      ccFile = fs.realpathSync(ccDir + '/' + cc + type);
+      ccFile = ccDir + '/' + cc + type;
       return fs.readFileSync(ccFile, {encoding: 'utf-8'});
     case _JS:
-      ccFile = fs.realpathSync(ccDir + '/javascript/' + cc + type);
+      ccFile = ccDir + '/javascript/' + cc + type;
       return ccFile;
     default:
       throw new Error(`LOAD ERROR: cc: ${cc}\ttype: ${type}`);
