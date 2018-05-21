@@ -3,7 +3,8 @@
 # perl/check.pl
 # ====================================================
 # CREATED: 2018-05-19
-# VERSION 2.1.0
+# UPDATED: 2018-05-21
+# VERSION 2.2.0
 # AUTHOR: wlharvey4
 # ABOUT: Test script for perl implementations
 # USAGE: ./check <code-challenge>
@@ -60,7 +61,8 @@ for my $test (@$json) {
     reportError($p, $r, $e)  unless eq_deeply($r, $e);
 }
 
-printf("Ran %d tests, with %d failure(s)\n\n", $#$json + 1, $w);
+my $total = scalar @$json;
+printf("Attempted:\t%d\nOk:\t\t%d\nFailed:\t\t%d\n\n", $total, $total-$w, $w);
 
 sub reportError {
     my ($p, $r, $e) = @_;
