@@ -4,7 +4,7 @@
    check.js
    ====================================================
    CREATED: 2018-05-14
-   UPDATED: 2018-05-21
+   UPDATED: 2018-05-22
    VERSION: 0.3.0
    AUTHOR:  wlharvey4
    ABOUT:   Test script for JavaScript code challenges.
@@ -15,77 +15,75 @@
 
 const assert = require('assert').strict;
 const fs = require('fs');
+const path = require('path');
 
 const OK = 'ok';
 const FAILED = 'failed';
-const _JSON = '.json';
-const _JS = '.js';
 
-// Find absolute path to root directory irrespective of path from which executable is called
-const BASE = 'Code-Challenges-Intl';
-const re = new RegExp(BASE);
-const EXEC_PATH = fs.realpathSync('.') // path from which executable is called
-EXEC_PATH.search(re);
-const ROOT_PATH = RegExp.leftContext + BASE;
+// get the Code Challenge name from the command-line argument
+let cc;
+try {
+  cc = process.argv[2];
+  if (!cc) throw new Error("ERROR: Need a code challenge name");
+} catch(e) {
+  console.error(e.message);
+  console.log('USAGE: ./check <code-challenge>');
+  process.exit(0);
+}
+
+// construct paths to resources
+const ROOT_PATH = path.format({ // absolute path to root directory
+  root: path.dirname(path.dirname(module.filename))
+});
+const ccDir = path.format({
+  dir: ROOT_PATH,
+  name: cc
+});
+const ccJson = path.format({ // path to JSON data
+  dir: ccDir,
+  name: cc,
+  ext: '.json'
+});
+
+// load and parse the test data into a JS object
+const json = JSON.parse(fs.readFileSync(ccJson, {encoding: 'utf-8'}));
+
+const ccLangDir = path.format({
+  dir: ccDir,
+  name: 'javascript'
+});
+const ccJs = path.format({ // path to code challenge
+  dir: ccLangDir,
+  name: cc,
+  ext: '.js'
+});
+
+// the code challenge
+const fn = require(ccJs);
 
 const assertError = (params, result, expected) => {
-    console.error('----------------------------------------------------');
-    console.error('Params:  ', params);
-    console.error('Expected:', expected);
-    console.error('Received:', result);
-    console.error('----------------------------------------------------\n');
+  console.error('----------------------------------------------------');
+  console.error('Params:  ', params);
+  console.error('Expected:', expected);
+  console.error('Received:', result);
+  console.error('----------------------------------------------------\n');
 }
 
-const report = results => {
-  console.log(`Attempted:\t${results.ok + results.failed}\nOk:\t\t${results.ok}\nFailed:\t\t${results.failed}\n`);
-}
-
-const load = (cc, type) => {
-  try {
-    const ccDir = ROOT_PATH + '/' + cc;
-    let ccFile;
-    switch (type) {
-    case _JSON:
-      ccFile = ccDir + '/' + cc + type;
-      return fs.readFileSync(ccFile, {encoding: 'utf-8'});
-    case _JS:
-      ccFile = ccDir + '/javascript/' + cc + type;
-      return ccFile;
-    default:
-      throw new Error(`LOAD ERROR: cc: ${cc}\ttype: ${type}`);
-    }
-  } catch(err) {
-    console.error(`ERROR attempting to load ${type}: `, err);
-  }
-}
-
-const processDatum = (datum, fn) => {
+// the test runner; uses assert.deepStrictEqual
+results = json.reduce((results, datum) => {
   const result = fn(datum.params);
   try {
     assert.deepStrictEqual(result, datum.expected);
+    results[OK]++;
   } catch(e) {
     assertError(datum.params, result, datum.expected);
-    return FAILED;
+    results[FAILED]++;
   }
-  return OK;
-}
+  return results;
+}, {ok: 0, failed: 0})
 
-const processDataJSON = (dataJSON, fn) => {
-  return dataJSON.reduce((results, datum) => {
-    const result = processDatum(datum, fn);
-    results[result]++;
-    return results;
-  }, {ok: 0, failed: 0})
-}
-
-const check = () => {
-  const cc = process.argv[2];
-  const fn = require(load(cc, _JS));
-  let dataJSON = JSON.parse(load(cc, _JSON));
-  return processDataJSON(dataJSON, fn);
-}
-
-const results = check();
-report(results);
-
-module.exports = check;
+console.error('====================================================');
+console.log(`Attempted:\t${results.ok + results.failed}`);
+console.log(`Ok:\t\t${results.ok}`);
+console.log(`Failed:\t\t${results.failed}`);
+console.log('====================================================');

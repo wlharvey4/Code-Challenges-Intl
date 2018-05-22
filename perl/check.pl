@@ -3,10 +3,10 @@
 # perl/check.pl
 # ====================================================
 # CREATED: 2018-05-19
-# UPDATED: 2018-05-21
-# VERSION 2.2.0
+# UPDATED: 2018-05-22
+# VERSION 0.2.3
 # AUTHOR: wlharvey4
-# ABOUT: Test script for perl implementations
+# ABOUT: Test script for perl Perl code challenges
 # USAGE: ./check <code-challenge>
 # NOTES:
 # ----------------------------------------------------
@@ -50,7 +50,7 @@ $json = eval { # load and decode the test data into a Perl hash reference
     decode_json(<JSON>);
 } || die $@;
 
-# deeply test the Code Challenge results against the expected values
+# the test runner; uses eq_deeply
 our ($i, $w) = (0, 0); # $i :=  test number; $w := number of tests found wrong
 for my $test (@$json) {
     $i++;
@@ -58,20 +58,27 @@ for my $test (@$json) {
     my $e = $test->{expected};
     if ($e->isa("JSON::PP::Boolean")) { $e = boolean($e) } # need to convert JSON boolean to Perl boolean
     my $r = fn($p);
-    reportError($p, $r, $e)  unless eq_deeply($r, $e);
+    assertError($p, $r, $e)  unless eq_deeply($r, $e);
 }
 
 my $total = scalar @$json;
-printf("Attempted:\t%d\nOk:\t\t%d\nFailed:\t\t%d\n\n", $total, $total-$w, $w);
+printf(qq{====================================================
+Attempted:\t%d
+Ok:\t\t%d
+Failed:\t\t%d
+====================================================
+}, $total, $total-$w, $w);
 
-sub reportError {
+sub assertError {
     my ($p, $r, $e) = @_;
+    say("----------------------------------------------------");
     say("Test [$i]");
+    print("Params:   => ");
     p($p);
-    print("Result   => ");
-    p($r);
-    print("Expected => ");
+    print("Expected: => ");
     p($e);
-    print("\n");
+    print("Received: => ");
+    p($r);
+    print("----------------------------------------------------\n");
     $w++;
 }

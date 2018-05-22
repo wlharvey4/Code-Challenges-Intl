@@ -1,14 +1,8 @@
 {
   "name": "cc-intl-js",
-  "version": "1.0.0",
+  "version": "0.3.0",
   "description": "Code Challenges Intl in JavaScript",
-  "main": "index.js",
+  "main": "check.js",
   "author": "wlharvey4",
-  "license": "MIT",
-  "scripts": {
-    "test": "mocha"
-  },
-  "devDependencies": {
-    "mocha": "^5.1.1"
-  }
+  "license": "MIT"
 }
