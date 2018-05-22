@@ -5,7 +5,7 @@
    ====================================================
    CREATED: 2018-05-14
    UPDATED: 2018-05-22
-   VERSION: 0.3.0
+   VERSION: 0.3.1
    AUTHOR:  wlharvey4
    ABOUT:   Test script for JavaScript code challenges.
    USAGE:   ./check <code-challenge>
@@ -13,22 +13,24 @@
    ----------------------------------------------------
  */
 
+// utility libraries
 const assert = require('assert').strict;
-const fs = require('fs');
-const path = require('path');
+const fs     = require('fs');
+const path   = require('path');
 
+// constants
 const OK = 'ok';
 const FAILED = 'failed';
+const USAGE  = 'USAGE: ./check <code-challenge>'; 
 
-// get the Code Challenge name from the command-line argument
-let cc;
+let cc;  // the name of the code challenge, from the CL
 try {
   cc = process.argv[2];
   if (!cc) throw new Error("ERROR: Need a code challenge name");
 } catch(e) {
   console.error(e.message);
-  console.log('USAGE: ./check <code-challenge>');
-  process.exit(0);
+  console.log(USAGE);
+  process.exit(-1);
 }
 
 // construct paths to resources
