@@ -5,16 +5,16 @@
    ====================================================
    CREATED: 2018-05-14
    UPDATED: 2018-05-21
-   VERSION: 2.1.0
+   VERSION: 0.3.0
    AUTHOR:  wlharvey4
-   ABOUT:   Test program for JavaScript challenges.
-   USAGE:   ./check.js <cc>
+   ABOUT:   Test script for JavaScript code challenges.
+   USAGE:   ./check <code-challenge>
    NOTES:
    ----------------------------------------------------
  */
 
+const assert = require('assert').strict;
 const fs = require('fs');
-const deeplyEqual = require('./deeplyEqual');
 
 const OK = 'ok';
 const FAILED = 'failed';
@@ -28,8 +28,12 @@ const EXEC_PATH = fs.realpathSync('.') // path from which executable is called
 EXEC_PATH.search(re);
 const ROOT_PATH = RegExp.leftContext + BASE;
 
-const reportFailed = (params, result, expected) => {
-  console.error('params: ', params, `\nresult: ${result}\nexpected: ${expected}\n`);
+const assertError = (params, result, expected) => {
+    console.error('----------------------------------------------------');
+    console.error('Params:  ', params);
+    console.error('Expected:', expected);
+    console.error('Received:', result);
+    console.error('----------------------------------------------------\n');
 }
 
 const report = results => {
@@ -57,9 +61,13 @@ const load = (cc, type) => {
 
 const processDatum = (datum, fn) => {
   const result = fn(datum.params);
-  if (deeplyEqual(result, datum.expected)) return OK;
-  reportFailed(datum.params, result, datum.expected);
-  return FAILED;
+  try {
+    assert.deepStrictEqual(result, datum.expected);
+  } catch(e) {
+    assertError(datum.params, result, datum.expected);
+    return FAILED;
+  }
+  return OK;
 }
 
 const processDataJSON = (dataJSON, fn) => {
