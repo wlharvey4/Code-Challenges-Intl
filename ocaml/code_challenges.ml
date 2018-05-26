@@ -2,10 +2,14 @@
    functors.ml
    ====================================================
    CREATED: 2018-05-25
-   VERSION: 1.0.0
+   UPDATED: 2018-05-26
+   VERSION: 1.0.1
    AUTHOR: wlharvey4
    ABOUT: Playing with functors in the Code_Challenge_Intl arena
    NOTES: This actually worked!!
+   COMPILATION: 
+     | ocamlfind ocamlopt -o code_challenges code_challenges.ml -package yojson
+     | ocamlbuild code_challenges.native -package yojson
    ----------------------------------------------------
 *)
 
@@ -13,6 +17,8 @@ module type CODECHALL =
 sig
   type in_t
   type out_t
+  type ccRecord_t
+  type ccFullRecord_t
   val fn : in_t -> out_t
   val print_fn : in_t -> unit
 end
@@ -21,6 +27,8 @@ module type FIZZBUZZ =
 sig
   type in_t = int
   type out_t
+  type ccRecord_t = In of {n: in_t} | Expected of out_t
+  type ccFullRecord_t = {params: ccRecord_t; expected: ccRecord_t}
   val fizzbuzz : in_t -> out_t
   val fn : in_t -> out_t
   val print_fn : in_t -> unit
@@ -35,6 +43,8 @@ struct
     | Fizzbuzz
   type in_t = int
   type out_t = fizzbuzz
+  type ccRecord_t = In of {n: in_t} | Expected of out_t
+  type ccFullRecord_t = {params: ccRecord_t; expected: ccRecord_t}
   let fizzbuzz n =
     let fizz = match (n mod 3) with 0 -> true | _ -> false in
     let buzz = match (n mod 5) with 0 -> true | _ -> false in
@@ -58,6 +68,8 @@ module type ISUNIQUE =
 sig
   type in_t = string
   type out_t
+  type ccRecord_t = In of {str: in_t} | Expected of out_t
+  type ccFullRecord_t = {params: ccRecord_t; expected: ccRecord_t}
   val isUnique : in_t -> out_t
   val fn : in_t -> out_t
   val print_fn : in_t -> unit
@@ -67,6 +79,8 @@ module IsUnique : ISUNIQUE =
 struct
   type in_t = string
   type out_t = bool
+  type ccRecord_t = In of {str: in_t} | Expected of out_t
+  type ccFullRecord_t = {params: ccRecord_t; expected: ccRecord_t}
   let isUnique str =
     let rec eval i =
       try
@@ -102,3 +116,18 @@ let () = Fn2.print_fn "a"
 let () = Fn2.print_fn "abc"
 let () = Fn2.print_fn "abca"
 let () = Fn2.print_fn "aa"
+
+module type CCJSON =
+sig
+  type dir
+  type ccRecord_t
+  type ccFullRecord_t = {params: ccRecord_t; expected: ccRecord_t}
+  type ccJson_t = Yojson.Basic.json
+  val rootDir : dir
+  val jsonDir : dir
+  val ccDir : dir
+  val ccJson : ccJson_t
+  val ccFullRecord : ccFullRecord_t
+  val getParams : ccFullRecord_t -> ccRecord_t
+  val getExpected : ccFullRecord_t -> ccRecord_t
+end
