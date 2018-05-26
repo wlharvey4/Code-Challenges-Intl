@@ -3,13 +3,12 @@
    ====================================================
    CREATED: 2018-05-25
    UPDATED: 2018-05-26
-   VERSION: 1.0.2
+   VERSION: 1.0.3
    AUTHOR: wlharvey4
    ABOUT: Playing with functors in the Code_Challenge_Intl arena
    NOTES: This actually worked!!
    COMPILATION: 
-     | ocamlfind ocamlopt -o code_challenges code_challenges.ml -package yojson
-     | ocamlbuild code_challenges.native -package yojson
+     corebuild code_challenges.native -package yojson
    ----------------------------------------------------
 *)
 
@@ -124,4 +123,23 @@ sig
   val ccFullRecord : ccFullRecord_t
   val getParams : ccFullRecord_t -> ccRecord_t
   val getExpected : ccFullRecord_t -> ccRecord_t
+end
+
+module Check =
+struct
+  type ccjson_t = Yojson.Basic.json
+  (* cc := code challenge as given on the command-line *)                    
+  let cc = try
+      Array.get Sys.argv 1
+    with
+    | Invalid_argument _ -> failwith "You must supply a cc name on the command-line: "
+    | e -> raise e
+  (* cC := capitalized name of the code challenge *)
+  let cC = String.capitalize_ascii cc
+  let ccjson =
+    let ccJsonDir = Filename.concat (Core.Filename.realpath Core.Filename.parent_dir_name) cc in
+    let () = print_endline("ccJsonDir: " ^ ccJsonDir) in
+    let ccJsonFile = Filename.concat ccJsonDir (cc ^ ".json") in
+    Yojson.Basic.from_file ccJsonFile
+  let () = print_endline(Yojson.Basic.to_string(ccjson))
 end
