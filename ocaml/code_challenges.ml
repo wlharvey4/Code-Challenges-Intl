@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-05-25
    UPDATED: 2018-05-26
-   VERSION: 1.0.1
+   VERSION: 1.0.2
    AUTHOR: wlharvey4
    ABOUT: Playing with functors in the Code_Challenge_Intl arena
    NOTES: This actually worked!!
@@ -15,23 +15,20 @@
 
 module type CODECHALL =
 sig
-  type in_t
+  type params_t
   type out_t
-  type ccRecord_t
-  type ccFullRecord_t
-  val fn : in_t -> out_t
-  val print_fn : in_t -> unit
+  val fn : params_t -> out_t
+  val print_fn : params_t -> unit
 end
 
 module type FIZZBUZZ =
 sig
   type in_t = int
   type out_t
-  type ccRecord_t = In of {n: in_t} | Expected of out_t
-  type ccFullRecord_t = {params: ccRecord_t; expected: ccRecord_t}
-  val fizzbuzz : in_t -> out_t
-  val fn : in_t -> out_t
-  val print_fn : in_t -> unit
+  type params_t = {n: in_t}
+  val fizzbuzz : params_t -> out_t
+  val fn : params_t -> out_t
+  val print_fn : params_t -> unit
 end
 
 module Fizzbuzz : FIZZBUZZ =
@@ -43,9 +40,8 @@ struct
     | Fizzbuzz
   type in_t = int
   type out_t = fizzbuzz
-  type ccRecord_t = In of {n: in_t} | Expected of out_t
-  type ccFullRecord_t = {params: ccRecord_t; expected: ccRecord_t}
-  let fizzbuzz n =
+  type params_t = {n: in_t}
+  let fizzbuzz {n} =
     let fizz = match (n mod 3) with 0 -> true | _ -> false in
     let buzz = match (n mod 5) with 0 -> true | _ -> false in
     match (fizz, buzz) with
@@ -53,8 +49,8 @@ struct
     | (true, false) -> Fizz
     | (false, true) -> Buzz
     | _ -> Num(n)
-  let print_fn n =
-    let result = fizzbuzz n in
+  let print_fn {n} =
+    let result = fizzbuzz {n} in
     print_endline((string_of_int n) ^ " -> " ^
     match result with
       | Num n -> string_of_int n
@@ -68,20 +64,18 @@ module type ISUNIQUE =
 sig
   type in_t = string
   type out_t
-  type ccRecord_t = In of {str: in_t} | Expected of out_t
-  type ccFullRecord_t = {params: ccRecord_t; expected: ccRecord_t}
-  val isUnique : in_t -> out_t
-  val fn : in_t -> out_t
-  val print_fn : in_t -> unit
+  type params_t = {str: in_t}
+  val isUnique : params_t -> out_t
+  val fn : params_t -> out_t
+  val print_fn : params_t -> unit
 end
 
 module IsUnique : ISUNIQUE =
 struct
   type in_t = string
   type out_t = bool
-  type ccRecord_t = In of {str: in_t} | Expected of out_t
-  type ccFullRecord_t = {params: ccRecord_t; expected: ccRecord_t}
-  let isUnique str =
+  type params_t = {str: in_t}
+  let isUnique {str} =
     let rec eval i =
       try
         let c = String.get str i in
@@ -93,9 +87,9 @@ struct
       | Invalid_argument _ -> true
       | e -> raise e
     in eval 0
-  let print_fn s =
-    let result = isUnique s in
-    print_endline (s ^ " -> " ^ string_of_bool result)
+  let print_fn {str} =
+    let result = isUnique {str} in
+    print_endline (str ^ " -> " ^ string_of_bool result)
   let fn = isUnique
 end
 
@@ -108,14 +102,14 @@ module CodeChallenge = functor (CodeChall : CODECHALL) ->
 module Fn1 = CodeChallenge(Fizzbuzz)
 module Fn2 = CodeChallenge(IsUnique)
 
-let () = Fn1.print_fn 3
-let () = Fn1.print_fn 5
-let () = Fn1.print_fn 15
-let () = Fn1.print_fn 1
-let () = Fn2.print_fn "a"
-let () = Fn2.print_fn "abc"
-let () = Fn2.print_fn "abca"
-let () = Fn2.print_fn "aa"
+let () = Fn1.print_fn {n = 3}
+let () = Fn1.print_fn {n = 5}
+let () = Fn1.print_fn {n = 15}
+let () = Fn1.print_fn {n = 1}
+let () = Fn2.print_fn {str = "a"}
+let () = Fn2.print_fn {str = "abc"}
+let () = Fn2.print_fn {str = "abca"}
+let () = Fn2.print_fn {str = "aa"}
 
 module type CCJSON =
 sig
