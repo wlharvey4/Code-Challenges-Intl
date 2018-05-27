@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-05-25
    UPDATED: 2018-05-26
-   VERSION: 1.0.5
+   VERSION: 1.1.0
    AUTHOR: wlharvey4
    ABOUT: Playing with functors in the Code_Challenge_Intl arena
    NOTES: Yojson => https://mjambon.github.io/mjambon2016/yojson
@@ -54,12 +54,6 @@ struct
   type params_t = {n: in_t}
   let equal result expected = result = expected
   let toParams n = {n}
-  let toFizzbuzz e =
-    match e with
-    | "Fizz" -> Fizz
-    | "Buzz" -> Buzz
-    | "Fizzbuzz" -> Fizzbuzz
-    | _ -> Num(int_of_string e)
   let fizzbuzz {n} =
     let fizz = match (n mod 3) with 0 -> true | _ -> false in
     let buzz = match (n mod 5) with 0 -> true | _ -> false in
@@ -82,8 +76,16 @@ struct
     let n = Yojson.Basic.Util.to_int(Yojson.Basic.Util.member "n" j) in
     toParams n
   let j_to_e j =
-    let e = Yojson.Basic.Util.to_string j in
-    toFizzbuzz e
+    match j with
+    | `String s -> (
+        match s with
+        | "fizzbuzz" -> Fizzbuzz
+        | "fizz" -> Fizz
+        | "buzz" -> Buzz
+        | _ -> invalid_arg "Should not be here"
+      )
+    | `Int n -> Num n
+    | _ -> invalid_arg "Should not be here"
 end
 
 module type ISUNIQUE =
@@ -210,7 +212,7 @@ struct
     let params = CC.j_to_p(Yojson.Basic.Util.member "params" json) in
     let expected = CC.j_to_e(Yojson.Basic.Util.member "expected" json) in
     let result = CC.equal (CC.fn params) expected in
-    let () = print_string("Result: " ^ string_of_bool result) in
+    let () = print_endline("Result: " ^ string_of_bool result) in
     CC.print_fn params
 
   let rec checkList jsonl =
@@ -221,3 +223,5 @@ struct
    let doCheck () = checkList ccJson
 
 end
+
+let () = Check.doCheck()
