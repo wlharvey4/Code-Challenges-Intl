@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-05-25
    UPDATED: 2018-05-26
-   VERSION: 1.0.4
+   VERSION: 1.0.5
    AUTHOR: wlharvey4
    ABOUT: Playing with functors in the Code_Challenge_Intl arena
    NOTES: Yojson => https://mjambon.github.io/mjambon2016/yojson
@@ -22,9 +22,11 @@ sig
   type in_t
   type out_t
   type params_t
+  val j_to_p : Yojson.Basic.json -> params_t
+  val j_to_e : Yojson.Basic.json -> out_t
   val fn : params_t -> out_t
   val print_fn : params_t -> unit
-  val j_to_p : Yojson.Basic.json -> params_t
+  val equal : out_t -> out_t -> bool
 end
 
 module type FIZZBUZZ =
@@ -35,7 +37,9 @@ sig
   val fizzbuzz : params_t -> out_t
   val fn : params_t -> out_t
   val print_fn : params_t -> unit
+  val equal : out_t -> out_t -> bool
   val j_to_p : Yojson.Basic.json -> params_t
+  val j_to_e : Yojson.Basic.json -> out_t
 end
 
 module Fizzbuzz : FIZZBUZZ =
@@ -48,7 +52,14 @@ struct
   type in_t = int
   type out_t = fizzbuzz
   type params_t = {n: in_t}
+  let equal result expected = result = expected
   let toParams n = {n}
+  let toFizzbuzz e =
+    match e with
+    | "Fizz" -> Fizz
+    | "Buzz" -> Buzz
+    | "Fizzbuzz" -> Fizzbuzz
+    | _ -> Num(int_of_string e)
   let fizzbuzz {n} =
     let fizz = match (n mod 3) with 0 -> true | _ -> false in
     let buzz = match (n mod 5) with 0 -> true | _ -> false in
@@ -70,6 +81,9 @@ struct
   let j_to_p j =
     let n = Yojson.Basic.Util.to_int(Yojson.Basic.Util.member "n" j) in
     toParams n
+  let j_to_e j =
+    let e = Yojson.Basic.Util.to_string j in
+    toFizzbuzz e
 end
 
 module type ISUNIQUE =
@@ -77,10 +91,12 @@ sig
   type in_t = string
   type out_t
   type params_t = {str: in_t}
+  val equal : out_t -> out_t -> bool
   val isUnique : params_t -> out_t
   val fn : params_t -> out_t
   val print_fn : params_t -> unit
   val j_to_p : Yojson.Basic.json -> params_t
+  val j_to_e : Yojson.Basic.json -> out_t
 end
 
 module IsUnique : ISUNIQUE =
@@ -101,6 +117,7 @@ struct
       | Invalid_argument _ -> true
       | e -> raise e
     in eval 0
+  let equal result expected = result = expected
   let print_fn {str} =
     let result = isUnique {str} in
     print_endline (str ^ " -> " ^ string_of_bool result)
@@ -108,25 +125,26 @@ struct
   let j_to_p j =
     let str = Yojson.Basic.Util.to_string(Yojson.Basic.Util.member "str" j) in
     toParams str
+  let j_to_e j = Yojson.Basic.Util.to_bool j
 end
 
-module CodeChallenge = functor (CodeChall : CODECHALL) ->
-  struct
-    let fn input = CodeChall.fn input
-    let print_fn input = CodeChall.print_fn input
-  end
-
-module Fn1 = CodeChallenge(Fizzbuzz)
-module Fn2 = CodeChallenge(IsUnique)
-
-let () = Fn1.print_fn {n = 3}
-let () = Fn1.print_fn {n = 5}
-let () = Fn1.print_fn {n = 15}
-let () = Fn1.print_fn {n = 1}
-let () = Fn2.print_fn {str = "a"}
-let () = Fn2.print_fn {str = "abc"}
-let () = Fn2.print_fn {str = "abca"}
-let () = Fn2.print_fn {str = "aa"}
+(* module CodeChallenge = functor (CodeChall : CODECHALL) ->
+ *   struct
+ *     let fn input = CodeChall.fn input
+ *     let print_fn input = CodeChall.print_fn input
+ *   end
+ * 
+ * module Fn1 = CodeChallenge(Fizzbuzz)
+ * module Fn2 = CodeChallenge(IsUnique)
+ * 
+ * let () = Fn1.print_fn {n = 3}
+ * let () = Fn1.print_fn {n = 5}
+ * let () = Fn1.print_fn {n = 15}
+ * let () = Fn1.print_fn {n = 1}
+ * let () = Fn2.print_fn {str = "a"}
+ * let () = Fn2.print_fn {str = "abc"}
+ * let () = Fn2.print_fn {str = "abca"}
+ * let () = Fn2.print_fn {str = "aa"} *)
 
 module type CCJSON =
 sig
@@ -143,7 +161,31 @@ sig
   val getExpected : ccFullRecord_t -> ccRecord_t
 end
 
-module Check =
+module CodeChall = functor(CC : CODECHALL) ->
+struct
+  type params_t = CC.params_t
+  let fn = CC.fn
+  let print_fn = CC.print_fn
+  let equal = CC.equal
+  let j_to_p = CC.j_to_p
+  let j_to_e = CC.j_to_e
+end
+
+module CC = CodeChall(Fizzbuzz)
+module CCIsU = CodeChall(IsUnique)
+
+module type CHECK =
+sig
+  val cc : string
+  val cC : string
+  val ccDir : string
+  val ccJson : Yojson.Basic.json list
+  val check : Yojson.Basic.json -> unit
+  val checkList : Yojson.Basic.json list -> unit
+  val doCheck : unit -> unit
+end
+
+module Check : CHECK=
 struct
 
   (* cc := code challenge as given on the command-line *)                    
@@ -158,30 +200,24 @@ struct
 
   let ccDir = Filename.concat (Core.Filename.realpath Core.Filename.parent_dir_name) cc
 
+  (* OCaml list of JSON data objects *)
   let ccJson =
     let ccJsonFile = Filename.concat ccDir (cc ^ ".json") in
     Yojson.Basic.Util.to_list(Yojson.Basic.from_file ccJsonFile)
 
-  let check json print_fn j_to_p =
+  let check json =
     let () = print_endline("==> " ^ Yojson.Basic.to_string json) in
-    let params = Yojson.Basic.Util.member "params" json in
-    print_fn (j_to_p params)
+    let params = CC.j_to_p(Yojson.Basic.Util.member "params" json) in
+    let expected = CC.j_to_e(Yojson.Basic.Util.member "expected" json) in
+    let result = CC.equal (CC.fn params) expected in
+    let () = print_string("Result: " ^ string_of_bool result) in
+    CC.print_fn params
 
-  let rec checkList jsonl print_fn j_to_p =
+  let rec checkList jsonl =
     match jsonl with
     | [] -> exit 0
-    | json :: jsonl' -> check json print_fn j_to_p; checkList jsonl' print_fn j_to_p
+    | json :: json' -> check json; checkList json'
 
-  module CodeChall = functor(CC : CODECHALL) ->
-  struct
-    type params_t = CC.params_t
-    let fn = CC.fn
-    let print_fn = CC.print_fn
-    let j_to_p = CC.j_to_p
-    let expect params expected = (fn params = expected)
-    let doCheck () = checkList ccJson print_fn j_to_p
-  end
-
-  module CC = CodeChall(Fizzbuzz)
+   let doCheck () = checkList ccJson
 
 end
