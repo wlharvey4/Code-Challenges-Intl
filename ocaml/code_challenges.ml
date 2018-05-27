@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-05-25
    UPDATED: 2018-05-26
-   VERSION: 1.1.1
+   VERSION: 1.2.0
    AUTHOR: wlharvey4
    ABOUT: Playing with functors in the Code_Challenge_Intl arena
    NOTES: Yojson => https://mjambon.github.io/mjambon2016/yojson
@@ -23,7 +23,7 @@ sig
   type out_t
   type params_t
   val fn : params_t -> out_t
-  val print_fn : params_t -> unit
+  val print_failed : params_t -> out_t -> out_t -> unit
   val equal : out_t -> out_t -> bool
   val j_to_p : Yojson.Basic.json -> params_t
   val j_to_e : Yojson.Basic.json -> out_t
@@ -35,7 +35,7 @@ sig
   type out_t
   type params_t = {n: in_t}
   val fn : params_t -> out_t
-  val print_fn : params_t -> unit
+  val print_failed : params_t -> out_t -> out_t -> unit
   val equal : out_t -> out_t -> bool
   val j_to_p : Yojson.Basic.json -> params_t
   val j_to_e : Yojson.Basic.json -> out_t
@@ -52,6 +52,9 @@ struct
     | Buzz
     | Fizzbuzz
   type params_t = {n: in_t}
+  (* TODO: provide an expected type, i.e., {e: out_t} 
+     This will require a complete refactor of the JSON object
+     and the other test runners. *)
 
   (* The Fizzbuzz Code Challenge *)
   let fizzbuzz {n} =
@@ -63,14 +66,19 @@ struct
     | (false, true) -> Buzz
     | (false,false) -> Num(n)
 
-  let print_fn {n} =
-    let result = fizzbuzz {n} in
-    print_endline((string_of_int n) ^ " -> " ^
-    match result with
-      | Num n -> string_of_int n
-      | Fizz -> "Fizz"
-      | Buzz -> "Buzz"
-      | Fizzbuzz -> "Fizzbuzz")
+  let print_fizzbuzz fb =
+    match fb with
+    | Fizzbuzz -> "fizzbuzz"
+    | Fizz -> "fizz"
+    | Buzz -> "buzz"
+    | Num n -> string_of_int n
+
+  let print_failed {n} e r =
+    begin
+      print_string("ERROR n: " ^ (string_of_int n));
+      print_string("\tresult: " ^ (print_fizzbuzz r));
+      print_endline("\texpected: " ^ (print_fizzbuzz e));
+    end
 
   let fn = fizzbuzz
 
@@ -99,8 +107,9 @@ sig
   type in_t = string
   type out_t
   type params_t = {str: in_t}
+
   val fn : params_t -> out_t
-  val print_fn : params_t -> unit
+  val print_failed : params_t -> out_t -> out_t -> unit
   val equal : out_t -> out_t -> bool
   val j_to_p : Yojson.Basic.json -> params_t
   val j_to_e : Yojson.Basic.json -> out_t
@@ -131,9 +140,12 @@ struct
   (* TODO: this is not a deep equal *)
   let equal result expected = result = expected
 
-  let print_fn {str} =
-    let result = isUnique {str} in
-    print_endline (str ^ " -> " ^ string_of_bool result)
+  let print_failed {str} e r =
+    begin
+      print_string ("ERROR: str: " ^ str);
+      print_string ("\tres: " ^ (string_of_bool r));
+      print_endline ("\texp: " ^ (string_of_bool e));
+    end
 
   let fn = isUnique
 
@@ -145,7 +157,7 @@ module CodeChall = functor(CC : CODECHALL) ->
 struct
   type params_t = CC.params_t
   let fn = CC.fn
-  let print_fn = CC.print_fn
+  let print_failed = CC.print_failed
   let equal = CC.equal
   let j_to_p = CC.j_to_p
   let j_to_e = CC.j_to_e
@@ -162,6 +174,8 @@ end
 module Check : CHECK=
 struct
 
+  type results_t = {ok: int; failed: int}
+
   (* code challenge name as given on the command-line *)                    
   let cc = try
       Array.get Sys.argv 1
@@ -170,7 +184,7 @@ struct
     | e -> raise e
 
   (* capitalized code challenge name *)
-  (* let cC = String.capitalize_ascii cc *)
+  let cC = String.capitalize_ascii cc
 
   let ccDir = Filename.concat (Core.Filename.realpath Core.Filename.parent_dir_name) cc
 
@@ -179,20 +193,32 @@ struct
     let ccJsonFile = Filename.concat ccDir (cc ^ ".json") in
     Yojson.Basic.Util.to_list(Yojson.Basic.from_file ccJsonFile)
 
-  let check json =
-    let () = print_endline("==> " ^ Yojson.Basic.to_string json) in
+  let print_results {ok; failed} =
+    let total = ok + failed in
+    begin
+      print_endline("\nCode Challenge: " ^ cC);
+      print_endline("========================");
+      print_endline("Total tests:\t" ^ (string_of_int total));
+      print_endline("OK:\t\t" ^ (string_of_int ok));
+      print_endline("Failed\t\t" ^ (string_of_int failed));
+    end
+
+  let check json {ok; failed} =
+    (* let () = print_endline("==> " ^ Yojson.Basic.to_string json) in *)
     let params = CC.j_to_p(Yojson.Basic.Util.member "params" json) in
     let expected = CC.j_to_e(Yojson.Basic.Util.member "expected" json) in
-    let result = CC.equal (CC.fn params) expected in
-    let () = print_endline("Result: " ^ string_of_bool result) in
-    CC.print_fn params
+    let result = CC.fn params in
+    let test_results = CC.equal result expected in
+    match test_results with
+    | true -> {ok=(ok + 1); failed}
+    | false -> (CC.print_failed params expected result); {ok; failed=(failed + 1)}
 
-  let rec checkList jsonl =
+  let rec checkList jsonl results =
     match jsonl with
-    | [] -> exit 0
-    | json :: json' -> check json; checkList json'
+    | [] -> print_results results; exit 0
+    | json :: json' -> checkList json' (check json results)
 
-   let check () = checkList ccJson
+   let check () = checkList ccJson {ok= 0; failed=0}
 
 end
 
