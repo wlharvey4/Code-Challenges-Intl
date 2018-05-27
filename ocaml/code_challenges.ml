@@ -1,9 +1,9 @@
 (*
-   functors.ml
+   code_challenges.ml
    ====================================================
    CREATED: 2018-05-25
    UPDATED: 2018-05-26
-   VERSION: 1.2.0
+   VERSION: 1.2.1
    AUTHOR: wlharvey4
    ABOUT: Playing with functors in the Code_Challenge_Intl arena
    NOTES: Yojson => https://mjambon.github.io/mjambon2016/yojson
@@ -29,11 +29,11 @@ sig
   val j_to_e : Yojson.Basic.json -> out_t
 end
 
-module type FIZZBUZZ =
+module type FIZZBUZZ = (* must conform to CODECHALL *)
 sig
   type in_t = int
   type out_t
-  type params_t = {n: in_t}
+  type params_t
   val fn : params_t -> out_t
   val print_failed : params_t -> out_t -> out_t -> unit
   val equal : out_t -> out_t -> bool
@@ -44,7 +44,6 @@ end
 
 module Fizzbuzz : FIZZBUZZ =
 struct
-
   type in_t = int
   type out_t = 
     | Num of int
@@ -102,11 +101,11 @@ struct
     | _ -> invalid_arg "Should not be here"
 end
 
-module type ISUNIQUE =
+module type ISUNIQUE = (* must conform to CODECHALL *)
 sig
   type in_t = string
   type out_t
-  type params_t = {str: in_t}
+  type params_t
 
   val fn : params_t -> out_t
   val print_failed : params_t -> out_t -> out_t -> unit
@@ -118,7 +117,6 @@ end
 
 module IsUnique : ISUNIQUE =
 struct
-
   type in_t = string
   type out_t = bool
   type params_t = {str: in_t}
@@ -203,7 +201,7 @@ struct
       print_endline("Failed\t\t" ^ (string_of_int failed));
     end
 
-  let check json {ok; failed} =
+  let check json {ok; failed} = (* checks the function; returns an updated returns_t object *)
     (* let () = print_endline("==> " ^ Yojson.Basic.to_string json) in *)
     let params = CC.j_to_p(Yojson.Basic.Util.member "params" json) in
     let expected = CC.j_to_e(Yojson.Basic.Util.member "expected" json) in
@@ -216,10 +214,10 @@ struct
   let rec checkList jsonl results =
     match jsonl with
     | [] -> print_results results; exit 0
-    | json :: json' -> checkList json' (check json results)
+    | json :: jsonl' -> checkList jsonl' (check json results)
 
-   let check () = checkList ccJson {ok= 0; failed=0}
-
+  (* starts the test runner *)
+  let check () = checkList ccJson {ok= 0; failed=0}
 end
 
 let () = Check.check()
