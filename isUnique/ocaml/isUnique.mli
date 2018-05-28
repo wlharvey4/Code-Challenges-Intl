@@ -1,12 +1,11 @@
 (*
    isUnique/ocaml/isUnique.mli
    ====================================================
-   CREATED: 2018-05-27
-   VERSION: 0.1.0
+   CREATED: 2018-05-28
+   VERSION 0.1.0
    AUTHOR: wlharvey4
-   ABOUT: Interface file for IsUnique code challenge in OCaml
-   NOTES: Must conform to CODECHALL interface from check.ml
-   COMPILATION: ocamlfind ocamlc -c isUnique.mli -package yojson
+   ABOUT: Interface for IsUnique code challenge in OCaml
+   NOTES: 
    ----------------------------------------------------
 *)
 
@@ -15,8 +14,9 @@ type out_t
 type params_t
 
 val fn : params_t -> out_t
-val print_failed : params_t -> out_t -> out_t -> unit
 val equal : out_t -> out_t -> bool
 val j_to_p : Yojson.Basic.json -> params_t
 val j_to_e : Yojson.Basic.json -> out_t
 val isUnique : params_t -> out_t
+val string_of_params : params_t -> string
+val string_of_out : out_t -> string

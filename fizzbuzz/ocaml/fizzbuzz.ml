@@ -1,13 +1,11 @@
 (*
    fizzbuzz/ocaml/fizzbuzz.ml
    ====================================================
-   CREATED: 2018-05-27
+   CREATED: 2018-05-28
    VERSION: 0.1.0
    AUTHOR: wlharvey4
-   ABOUT: Implementation file for Fizzbuzz code challege in OCaml
-   NOTES:
-   COMPILATION: ocamlfind ocamlopt -c fizzbuzz.ml -package yojson
-   	        ocamlfind ocamlopt -a -o fizzbuzz.cmxa fizzbuzz.cmx -package yojson
+   ABOUT: Fizzbuzz code challenge in OCaml
+   NOTES: 
    ----------------------------------------------------
 *)
 
@@ -21,6 +19,8 @@ type params_t = {n: in_t}
 (* TODO: provide an expected type, i.e., {e: out_t} 
    This will require a complete refactor of the JSON object
    and the other test runners. *)
+type string_of_params = params_t -> string
+type string_of_out = out_t -> string
 
 (* The Fizzbuzz Code Challenge *)
 let fizzbuzz {n} =
@@ -39,16 +39,8 @@ let print_fizzbuzz fb =
   | Buzz -> "buzz"
   | Num n -> string_of_int n
 
-let print_failed {n} e r =
-  begin
-    print_string("ERROR n: " ^ (string_of_int n));
-    print_string("\tresult: " ^ (print_fizzbuzz r));
-    print_endline("\texpected: " ^ (print_fizzbuzz e));
-  end
-
 let fn = fizzbuzz
 
-(* TODO: This is not a deep equals *)
 let equal result expected = result = expected
 
 (* convert JSON params value into Fizzbuzz params_t value *)
@@ -66,3 +58,6 @@ let j_to_e j =
     )
   | `Int n -> Num n
   | _ -> invalid_arg "Should not be here"
+
+let string_of_params p = "{n: " ^ (string_of_int p.n) ^ "}"
+let string_of_out o = print_fizzbuzz o
