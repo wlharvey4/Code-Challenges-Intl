@@ -2,7 +2,7 @@
    ocaml/ccDirs.ml
    ====================================================
    CREATED: 2018-05-28
-   VERSION: 0.1.0
+   VERSION: 0.1.1
    AUTHOR: wlharvey4
    ABOUT: Utility module CcDirs for dealing with directories and Yojson
    NOTES: 
@@ -26,7 +26,7 @@ let cc = try
 let cC = String.capitalize cc
 
 (* check.native will be generated in the root directory *)
-let root = Filename.realpath Filename.current_dir_name
+let root = Filename.realpath Filename.parent_dir_name
 
 (* ROOT/<cc> *)
 let jsonDir = Filename.concat root cc
