@@ -5,3 +5,5 @@ _build/*
 *.native
 *.byte
 *.cm?
+__pycache__/
+*.pyc
