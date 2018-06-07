@@ -1,0 +1,7 @@
+[
+  {"params": {"str": "ooxx"}, "expected": true},
+  {"params": {"str": "xooxx"}, "expected": false},
+  {"params": {"str": "ooxXm"}, "expected": true},
+  {"params": {"str": "zpzpzpp"}, "expected": true},
+  {"params": {"str": "zzoo"}, "expected": false}
+]
