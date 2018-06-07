@@ -3,8 +3,8 @@
 # perl/check.pl
 # ====================================================
 # CREATED: 2018-05-19
-# UPDATED: 2018-05-22
-# VERSION 0.2.3
+# UPDATED: 2018-06-06
+# VERSION 1.0.0
 # AUTHOR: wlharvey4
 # ABOUT: Test script for perl Perl code challenges
 # USAGE: ./check <code-challenge>
@@ -25,12 +25,15 @@ use Data::Printer output => 'stdout'; # provides &p() (pretty-printing of data s
 use JSON;		# provides &decode_json()
 use Test::Deep::NoTest; # provides &eq_deeply()
 
+# CONSTANTS
+my $CHALLENGES = "challenges";
+
 # Variables
 our $fn;	# the aliased code challenge subroutine
 my $cc;		# the name of the code challenge from the CL invocation
 my $ccPM;	# the code challenge module path
 my $ccJSON;	# the code challenge data path
-my $json;	# the code challenge data storage
+my $jsonData;	# the code challenge data storage
 
 # get the Code Challenge name from the command-line argument
 $cc = $ARGV[0];
@@ -39,12 +42,12 @@ unless ($cc) {
 }
 
 # construct paths to resources
-$ccPM = catfile(${cc}, 'perl', ${cc}.'.pm');
-$ccJSON = catfile('..', ${cc}, ${cc}.'.json');
+$ccPM = catfile('..', '..', $CHALLENGES, ${cc}, 'perl', ${cc}.'.pm');
+$ccJSON = catfile('..', '..', $CHALLENGES, ${cc}, ${cc}.'.json');
 
 require $ccPM; # load the code challenge module
 *fn = *{$cc};  # alias the code challenge name (&{$cc}) to &fn
-$json = eval { # load and decode the test data into a Perl hash reference
+$jsonData = eval { # load and decode the test data into a Perl hash reference
     local $/;
     open JSON, '<', $ccJSON;
     decode_json(<JSON>);
@@ -52,7 +55,7 @@ $json = eval { # load and decode the test data into a Perl hash reference
 
 # the test runner; uses eq_deeply
 our ($i, $w) = (0, 0); # $i :=  test number; $w := number of tests found wrong
-for my $test (@$json) {
+for my $test (@$jsonData) {
     $i++;
     my $p = $test->{params};
     my $e = $test->{expected};
@@ -61,7 +64,7 @@ for my $test (@$json) {
     assertError($p, $r, $e)  unless eq_deeply($r, $e);
 }
 
-my $total = scalar @$json;
+my $total = scalar @$jsonData;
 printf(qq{====================================================
 Attempted:\t%d
 Ok:\t\t%d

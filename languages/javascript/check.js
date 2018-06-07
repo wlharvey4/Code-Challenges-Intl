@@ -47,14 +47,14 @@ const ccDir = path.format({
   name: cc
 });
 // JSON file holding test data for code challenge
-const ccJson = path.format({ // path to JSON data
+const ccJSON = path.format({ // path to JSON data
   dir: ccDir,
   name: cc,
   ext: '.json'
 });
 
 // load and parse the test data into a JS object
-const jsonData = JSON.parse(fs.readFileSync(ccJson, {encoding: 'utf-8'}));
+const jsonData = JSON.parse(fs.readFileSync(ccJSON, {encoding: 'utf-8'}));
 
 const ccLangDir = path.format({
   dir: ccDir,
