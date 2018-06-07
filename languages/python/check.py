@@ -4,7 +4,7 @@
 # ====================================================
 # CREATED: 2018-05-29
 # UPDATED: 2018-06-06
-# VERSION: 1.1.0
+# VERSION: 1.2.0
 # AUTHOR: wlharvey4
 # ABOUT: Python code challenge test runner
 # NOTES: Dynamic import is done with `importlib.import_module(<package>);
@@ -19,6 +19,7 @@ from pathlib import PurePath, Path
 
 PYTHON = 'python'
 JSON = '.json'
+CHALLENGES = 'challenges'
 
 # get code challenge name from command-line argument
 if len(sys.argv) != 2:
@@ -28,7 +29,8 @@ if len(sys.argv) != 2:
 cc = sys.argv[1]
 
 # construct paths
-root = PurePath(Path.cwd()).parent
+# root := Code-Challenges-Intl/challenges from Code-Challenges-Intl/languages/python
+root = PurePath.joinpath(PurePath(Path.cwd()).parent.parent, CHALLENGES)
 ccDir = PurePath.joinpath(root, cc)
 ccJson = PurePath.joinpath(ccDir, cc).with_suffix(JSON)
 
