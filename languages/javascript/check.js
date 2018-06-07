@@ -4,8 +4,8 @@
    check.js
    ====================================================
    CREATED: 2018-05-14
-   UPDATED: 2018-05-22
-   VERSION: 0.3.1
+   UPDATED: 2018-06-06
+   VERSION: 1.0.0
    AUTHOR:  wlharvey4
    ABOUT:   Test script for JavaScript code challenges.
    USAGE:   ./check <code-challenge>
@@ -22,6 +22,7 @@ const path   = require('path');
 const OK = 'ok';
 const FAILED = 'failed';
 const USAGE  = 'USAGE: ./check <code-challenge>'; 
+const CHALLENGES = '/challenges';
 
 let cc;  // the name of the code challenge, from the CL
 try {
@@ -34,13 +35,18 @@ try {
 }
 
 // construct paths to resources
-const ROOT_PATH = path.format({ // absolute path to root directory
-  root: path.dirname(path.dirname(module.filename))
-});
+const challengesDir = path.join (
+  /* absolute path to `challenges' directory
+     from languages/<language> directory */
+  path.format({root: path.dirname(path.dirname(path.dirname(module.filename)))}),
+  CHALLENGES
+);
+// challenges/<code-challenge>/
 const ccDir = path.format({
-  dir: ROOT_PATH,
+  dir: challengesDir,
   name: cc
 });
+// JSON file holding test data for code challenge
 const ccJson = path.format({ // path to JSON data
   dir: ccDir,
   name: cc,
@@ -48,7 +54,7 @@ const ccJson = path.format({ // path to JSON data
 });
 
 // load and parse the test data into a JS object
-const json = JSON.parse(fs.readFileSync(ccJson, {encoding: 'utf-8'}));
+const jsonData = JSON.parse(fs.readFileSync(ccJson, {encoding: 'utf-8'}));
 
 const ccLangDir = path.format({
   dir: ccDir,
@@ -72,7 +78,7 @@ const assertError = (params, result, expected) => {
 }
 
 // the test runner; uses assert.deepStrictEqual
-results = json.reduce((results, datum) => {
+results = jsonData.reduce((results, datum) => {
   const result = fn(datum.params);
   try {
     assert.deepStrictEqual(result, datum.expected);
