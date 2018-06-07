@@ -3,11 +3,14 @@
 # python/check.py
 # ====================================================
 # CREATED: 2018-05-29
-# UPDATED: 2018-06-05
-# VERSION: 1.0.0
+# UPDATED: 2018-06-06
+# VERSION: 1.1.0
 # AUTHOR: wlharvey4
 # ABOUT: Python code challenge test runner
-# NOTES:
+# NOTES: Dynamic import is done with `importlib.import_module(<package>);
+#        A package is a dot-separated list of directories and file;
+#        The root of the system must be added to `sys.path' list;
+#        Interpolation is done using the `str.format()` method
 # ----------------------------------------------------
 
 import sys, json
