@@ -2,7 +2,8 @@
    ocaml/ccDirs.ml
    ====================================================
    CREATED: 2018-05-28
-   VERSION: 0.1.1
+   UPDATED: 2018-06-06
+   VERSION: 1.0.0
    AUTHOR: wlharvey4
    ABOUT: Utility module CcDirs for dealing with directories and Yojson
    NOTES: 
@@ -14,6 +15,7 @@ open Core
 type dir = string
 
 let jsonExt = ".json"
+let challenges = "challenges"
 
 (* code challenge name as given on the command-line *)                    
 let cc = try
@@ -25,13 +27,14 @@ let cc = try
 (* capitalized code challenge name *)
 let cC = String.capitalize cc
 
-(* check.native will be generated in the root directory *)
-let root = Filename.realpath Filename.parent_dir_name
+(* check.native will be generated in the root directory Code-Challenges-Intl
+   starting from Code-Challenges-Intl/languages/ocaml *)
+let root = Filename.dirname (Filename.realpath Filename.parent_dir_name)
 
-(* ROOT/<cc> *)
-let jsonDir = Filename.concat root cc
+(* ROOT/challenges/<cc> *)
+let jsonDir = Filename.concat (Filename.concat root challenges) cc
 
-(* ROOT/<cc>/<cc>.json *)
+(* ROOT/challenges/<cc>/<cc>.json *)
 let jsonFile = Filename.concat jsonDir (cc ^ jsonExt)
 
 (* the JSON data *)
