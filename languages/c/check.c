@@ -2,8 +2,8 @@
    languages/c/check.c
    ====================================================
    CREATED: 2018-06-10
-   UPDATED: 2018-06-18
-   VERSION: 1.0.2
+   UPDATED: 2018-06-19
+   VERSION: 1.1.0
    AUTHOR: wlharvey4
    ABOUT: Test runner for C implementation
    NOTES: 
@@ -33,10 +33,11 @@ int main (int argc, char ** argv) {
   /* LOCAL VARIABLES */
   /*******************/
   void * handle;	 /* reference to dynamically-linked and loaded code challenge */
-  Fizzbuzz (*fn)(Input); /* reference to function exported by the code challenge */
+  Result (*fn)(Input);	 /* reference to function exported by the code challenge */
   char * cc_name;        /* code challenge name from command line */
+  char cc_dir[BUFSIZ];	 /* full path to code challenge */
   char ccjson[BUFSIZ];   /* path to code challenge JSON data file */
-  size_t cclen;          /* length of ccjson */
+  int cclen;             /* length of copied path */
   FILE * ccfp;           /* File pointer to CC JSON data file */
   json_t * json;         /* parsed JSON data */
   int size;              /* size of JSON array */
@@ -49,15 +50,26 @@ int main (int argc, char ** argv) {
     exit(-1);
   }
   cc_name = argv[1];
-  printf("Code Challenge: %s\n", cc_name);
 
-  handle = dlopen("../../challenges/fizzbuzz/c/libfizzbuzz.dylib", RTLD_NOW);
-  fn = dlsym(handle, "fizzbuzz");
+  memset(cc_dir, '\0', BUFSIZ);
+  printf("Code Challenge: %s\n", cc_name);
+  cclen = snprintf(cc_dir, BUFSIZ, "../../challenges/%s/c/lib%s.dylib", cc_name, cc_name);
+  if (cclen >= BUFSIZ || cclen < 0) {
+    printf("ERROR creating CC NAME path; program terminated.");
+    exit(-1);
+  }
+
+  /* DYNAMICALLY LOAD AND LINK TO THE CODE CHALLENGE */
+  /***************************************************/
+  handle = dlopen(cc_dir, RTLD_NOW);
+  fn = dlsym(handle, cc_name);
 
   /* CONSTRUCT PATH TO CODE CHALLENGE JSON DATA FILE  */
   /****************************************************/
-  if ((cclen = snprintf(ccjson, BUFSIZ, "../../challenges/%s/%s.json", cc_name, cc_name)) >= BUFSIZ) {
-    printf("Error creating CC JSON path; program terminated.");
+  memset(ccjson, '\0', BUFSIZ);
+  cclen = snprintf(ccjson, BUFSIZ, "../../challenges/%s/%s.json", cc_name, cc_name);
+  if (cclen >= BUFSIZ || cclen < 0) {
+    printf("ERROR creating CC JSON path; program terminated.");
     exit(-1);
   }
 
@@ -81,23 +93,23 @@ int main (int argc, char ** argv) {
     json_t * expected_json = json_object_get(test, "expected");
 
     /* convert the JSON values into C structs using code challenge utility function */
-    Input_Expected * input_expected = fizzbuzz_convert(params_json, expected_json);
+    Input_Result * input_expected = cc_convert(params_json, expected_json);
     Input input       = * input_expected->input;
-    Fizzbuzz expected = * input_expected->expected;
+    Result expected = * input_expected->expected;
 
     /* call the code challenge with the Input value */
-    Fizzbuzz result = fn(input);//fizzbuzz(input);
+    Result result = fn(input);//fizzbuzz(input);
 
     /* check the result against the expected value */
-    if (fizzbuzz_cmp(result, expected)) {
+    if (cc_cmp(result, expected)) {
       results.ok++;
     } else {
       results.failed++;
       printf("Failed n = %d\n", input.n);
       printf("Result: ");
-      fizzbuzz_print(result);
+      cc_print(result);
       printf("Expected: ");
-      fizzbuzz_print(expected);
+      cc_print(expected);
       printf("\n");
     }
 

@@ -2,8 +2,8 @@
    challenges/util.c
    ====================================================
    CREATED: 2018-06-10
-   UPDATED: 2018-06-11
-   VERSION: 1.0.0
+   UPDATED: 2018-06-19
+   VERSION: 1.1.0
    AUTHOR: wlharvey4
    ABOUT: Instead of  sending JSON  to the  challenges
           implemented  in C,  create a  helper function
@@ -15,13 +15,13 @@
 
 # include "./util.h"
 
-Input_Expected * fizzbuzz_convert(json_t * params, json_t * expected) {
+Input_Result * cc_convert(json_t * params, json_t * expected) {
 
   /* LOCAL VARIABLES FOR RETURN */
   /******************************/
   Input    * _input    = malloc(sizeof(Input));
   Fizzbuzz * _expected = malloc(sizeof(Fizzbuzz));
-  Input_Expected * input_expected = malloc(sizeof(Input_Expected));
+  Input_Result * input_expected = malloc(sizeof(Input_Result));
 
   /* local temporary variables */
   /* ------------------------- */
@@ -63,11 +63,11 @@ Input_Expected * fizzbuzz_convert(json_t * params, json_t * expected) {
   return input_expected;
 }
 
-int fizzbuzz_cmp(Fizzbuzz result, Fizzbuzz expected) {
+int cc_cmp(Result result, Result expected) {
   return ((result.fb_t == expected.fb_t) && (result.fb == expected.fb));
 }
 
-void fizzbuzz_print(Fizzbuzz fb) {
+void cc_print(Result fb) {
   switch(fb.fb_t) {
   case 0:
     printf("%d\n", fb.fb);

@@ -2,7 +2,8 @@
    challenges/util.h
    ====================================================
    CREATED: 2018-06-10
-   VERSION: 1.0.0
+   UPDATED: 2018-06-19
+   VERSION: 1.1.0
    AUTHOR: wlharvey4
    ABOUT: Instead of  sending JSON  to the  challenges
           implemented  in C,  create a  helper function
@@ -21,19 +22,21 @@
 
 # include "fizzbuzz.h"
 
+typedef Fizzbuzz Result;
+
 /* a struct that holds the converted JSON input and expected values */
 typedef struct {
   Input * input;
-  Fizzbuzz * expected;
-} Input_Expected;
+  Result * expected;
+} Input_Result;
 
 /* Turn JSON into Fizzbuzz objects */
-Input_Expected * fizzbuzz_convert(json_t * params, json_t * expected);
+Input_Result * cc_convert(json_t * params, json_t * expected);
 
 /* Fizzbuzz compare: return true for equal, false for nonequal values */
-int fizzbuzz_cmp(Fizzbuzz, Fizzbuzz);
+int cc_cmp(Result, Result);
 
 /* print a Fizzbuzz value */
-void fizzbuzz_print(Fizzbuzz);
+void cc_print(Fizzbuzz);
 
 #endif
