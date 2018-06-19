@@ -2,8 +2,8 @@
    languages/c/check.c
    ====================================================
    CREATED: 2018-06-10
-   UPDATED: 2018-06-11
-   VERSION: 1.0.0
+   UPDATED: 2018-06-18
+   VERSION: 1.0.1
    AUTHOR: wlharvey4
    ABOUT: Test runner for C implementation
    NOTES: 
@@ -14,6 +14,13 @@
      lldb -- check <code-challenge>
      (lldb) breakpoint set --name main
      (lldb) run
+   DYLIB:
+     clang -shared -fpic fizzbuzz.c ../../util.c -I ../../ -o libfizzbuzz.dylib
+     place libfizzbuzz.dylib in /usr/local/lib
+     clang -o check check.c -ljansson -lfizzbuzz
+     or reference directly [clang -o check check.c ../../challenges/fizzbuzz/c/libfizzbuzz.dylib -ljansson]
+     nm check
+     otool -L check
    ----------------------------------------------------
  */
 
