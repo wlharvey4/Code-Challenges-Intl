@@ -15,6 +15,7 @@
 # ifndef CC_CHECK
 # define CC_CHECK
 
+# include <dlfcn.h>
 # include <stdlib.h>
 # include <stdio.h>
 # include <jansson.h>

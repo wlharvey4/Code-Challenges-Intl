@@ -30,6 +30,8 @@ int main (int argc, char ** argv) {
 
   /* LOCAL VARIABLES */
   /*******************/
+  void * handle;	 /* reference to dynamically-linked and loaded code challenge */
+  Fizzbuzz (*fn)(Input); /* reference to function exported by the code challenge */
   char * cc_name;        /* code challenge name from command line */
   char ccjson[BUFSIZ];   /* path to code challenge JSON data file */
   size_t cclen;          /* length of ccjson */
@@ -46,6 +48,9 @@ int main (int argc, char ** argv) {
   }
   cc_name = argv[1];
   printf("Code Challenge: %s\n", cc_name);
+
+  handle = dlopen("../../challenges/fizzbuzz/c/libfizzbuzz.dylib", RTLD_NOW);
+  fn = dlsym(handle, "fizzbuzz");
 
   /* CONSTRUCT PATH TO CODE CHALLENGE JSON DATA FILE  */
   /****************************************************/
@@ -79,7 +84,7 @@ int main (int argc, char ** argv) {
     Fizzbuzz expected = * input_expected->expected;
 
     /* call the code challenge with the Input value */
-    Fizzbuzz result = fizzbuzz(input);
+    Fizzbuzz result = fn(input);//fizzbuzz(input);
 
     /* check the result against the expected value */
     if (fizzbuzz_cmp(result, expected)) {
