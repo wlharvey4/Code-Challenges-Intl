@@ -2,8 +2,8 @@
    languages/c/check.h
    ====================================================
    CREATED: 2018-06-10
-   UPDATED: 2018-06-11
-   VERSION: 1.0.0
+   UPDATED: 2018-06-19
+   VERSION: 1.0.1
    AUTHOR: wlharvey4
    ABOUT: Header for check.c, C test runner
    NOTES: This implementation is dependent upon Jansson (www.digip.org/jansson),
@@ -20,8 +20,8 @@
 # include <stdio.h>
 # include <jansson.h>
 
-# include "../../challenges/fizzbuzz/c/fizzbuzz.h"
-# include "../../challenges/util.h"
+# include "fizzbuzz.h"
+# include "util.h"
 
 # define READ "r"
 

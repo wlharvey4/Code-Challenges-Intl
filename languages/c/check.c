@@ -3,24 +3,26 @@
    ====================================================
    CREATED: 2018-06-10
    UPDATED: 2018-06-18
-   VERSION: 1.0.1
+   VERSION: 1.0.2
    AUTHOR: wlharvey4
    ABOUT: Test runner for C implementation
    NOTES: 
-   COMPILATION:
-     clang -o check check.c ../../challenges/util.c ../../challenges/fizzbuzz/c/fizzbuzz.c -ljansson
+   COMPILATION USING DYLIB:
+     -- create a dynamic library from the code challenge and a utility file
+     clang [-g] -Wall -o libfizzbuzz.dylib -shared -fpic fizzbuzz.c util.c -ljansson
+     -- compile the `check' program dynamically using the dynamic library created above
+     clang [-g] -Wall -o check check.c -I ../../challenges/fizzbuzz/c -L ../../challenges/fizzbuzz/c -lfizzbuzz -ljansson
+     DYLD_LIBRARY_PATH=../../challenges/fizzbuzz/c ./check fizzbuzz
+
+     or place libfizzbuzz.dylib in /usr/local/lib
+     then clang -o check check.c -ljansson -lfizzbuzz
+     ./check fizzbuzz
+     nm check
+     otool -L check
    DEBUG: 
-     clang -g -o check check.c ../../challenges/util.c ../../challenges/fizzbuzz/c/fizzbuzz.c -ljansson
      lldb -- check <code-challenge>
      (lldb) breakpoint set --name main
      (lldb) run
-   DYLIB:
-     clang -shared -fpic fizzbuzz.c ../../util.c -I ../../ -o libfizzbuzz.dylib
-     place libfizzbuzz.dylib in /usr/local/lib
-     clang -o check check.c -ljansson -lfizzbuzz
-     or reference directly [clang -o check check.c ../../challenges/fizzbuzz/c/libfizzbuzz.dylib -ljansson]
-     nm check
-     otool -L check
    ----------------------------------------------------
  */
 

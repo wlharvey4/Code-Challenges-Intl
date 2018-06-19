@@ -19,7 +19,7 @@
 # include <stdio.h>
 # include <jansson.h>
 
-# include "./fizzbuzz/c/fizzbuzz.h"
+# include "fizzbuzz.h"
 
 /* a struct that holds the converted JSON input and expected values */
 typedef struct {
