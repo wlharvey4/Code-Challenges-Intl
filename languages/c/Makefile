@@ -1,49 +1,60 @@
 # languages/c/Makefile
 # ====================================================
 # CREATED: 2018-06-19
-# VERSION: 1.0.0
+# UPDATED: 2018-06-19
+# VERSION: 1.1.0
 # AUTHOR: wlharvey4
-# ABOUT: Compiles the code challenge into the check program
-#        and allows for dynamic linking and loading based
-#        upon command line invocation; the default rule
-#        `default' compiles both the code challenge and
-#        check.c, and then runs `check' with the given
-#        code challenge from the command line 
-# NOTES: CC obtains its value from the command line via
-#        cc.sh, e.g.:  ./cc fizzbuzz
+# ABOUT: Compiles the code challenge given on the command
+#	 line,  and   if  necessary   the  `check.c/h`
+#	 module, as  `_check`, then runs  the `_check`
+#	 program  against the  code challenge  through
+#	 dynamic linking and loading;
+# NOTES: `check <code-challenge>`' is invoked as a shell
+#	 which   runs  a   Makefile  based   upon  the
+#	 code-challenge passed by  the shell script as
+#	 CC, e.g.: ./check fizzbuzz produces
+#	 `make CC=fizzbuzz --silent'; the Makefile
+#	 cleans the dylib by default; `check` can be
+#	 cleaned with `make clean-all`.
 # ----------------------------------------------------
 
 CC = 
-UTIL = util
-CHECK = check
+UTIL := util
+CHECK := check
 
-CC_CH = ${CC}.[ch]
-UTIL_CH = ${UTIL}.[ch]
-CHECK_CH = ${CHECK}.[ch]
+CC_CH := ${CC}.[ch]
+UTIL_CH := ${UTIL}.[ch]
+CHECK_CH := ${CHECK}.[ch]
 
-ROOT = /usr/local/dev/programming/Code-Challenges-Intl
-CC_DIR = ${ROOT}/challenges/${CC}/c
-LANG_DIR = ${ROOT}/languages/c
 
-.Phony:		default
-default:	dylib mkcheck run clean
+ROOT := $(realpath ../..)
+CC_DIR := ${ROOT}/challenges/${CC}/c
+LANG_DIR := ${ROOT}/languages/c
+VPATH := ${CC_DIR} ${LANG_DIR}
+
+.Phony:		all
+all:		dylib mkcheck run clean
 
 .Phony:		dylib
-dylib:		${CC_DIR}/lib${CC}.dylib
+dylib:		lib${CC}.dylib
 
-${CC_DIR}/lib${CC}.dylib:	${CC_DIR}/${CC_CH} ${CC_DIR}/${UTIL_CH}
-	clang -g -Wall -o ${CC_DIR}/lib${CC}.dylib -shared -fpic ${CC_DIR}/${CC}.c ${CC_DIR}/${UTIL}.c -ljansson
+lib${CC}.dylib:	${CC_DIR}/${CC_CH} ${CC_DIR}/${UTIL_CH}
+		clang -g -Wall -o ${CC_DIR}/lib${CC}.dylib -shared -fpic ${CC_DIR}/${CC}.c ${CC_DIR}/${UTIL}.c -ljansson
 
 .Phony:		mkcheck
-mkcheck:	${LANG_DIR}/_${CHECK}
+mkcheck:	_${CHECK}
 
-${LANG_DIR}/_${CHECK}:	${CHECK_CH} dylib
-	clang -g -Wall -o _${CHECK} ${CHECK}.c -I ${CC_DIR} -L ${CC_DIR} -l${CC} -ljansson
+_${CHECK}:	${CHECK_CH} dylib
+		clang -g -Wall -o _${CHECK} ${CHECK}.c -I ${CC_DIR} -L ${CC_DIR} -l${CC} -ljansson
 
 .Phony:		run
 run:
-	${LANG_DIR}/_${CHECK} ${CC}
+		./_${CHECK} ${CC}
 
 .Phony:		clean
 clean:
-		rm -r ${CC_DIR}/lib${CC}.dylib*; rm -r ${LANG_DIR}/_${CHECK} ${LANG_DIR}/_${CHECK}.dSYM
+		rm -fr ${CC_DIR}/lib${CC}.dylib*;
+
+.Phony:		clean-all
+clean-all:	clean
+		rm -fr ${LANG_DIR}/_${CHECK} ${LANG_DIR}/_${CHECK}.dSYM
