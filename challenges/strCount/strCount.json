@@ -1,6 +1,8 @@
 [
   {"params": {"str1": "Hello", "str2": "o"}, "expected": 1},
   {"params": {"str1": "Hello", "str2": "l"}, "expected": 2},
-  {"params": {"str1": "", "str2": "z"}, "expected": 0}
+  {"params": {"str1": "", "str2": "z"}, "expected": 0},
+  {"params": {"str1": "Hello", "str2": "H"}, "expected": 1},
+  {"params": {"str1": "Hello", "str2": "h"}, "expected": 0}
 ]
 
