@@ -2,8 +2,8 @@
    languages/c/check.c
    ====================================================
    CREATED: 2018-06-10
-   UPDATED: 2018-06-19
-   VERSION: 1.2.0
+   UPDATED: 2018-06-20
+   VERSION: 1.3.0
    AUTHOR: wlharvey4
    ABOUT: Test runner for C implementation
    NOTES: 
@@ -98,18 +98,17 @@ int main (int argc, char ** argv) {
     Result expected = * input_expected->expected;
 
     /* call the code challenge with the Input value */
-    Result result = fn(input);//fizzbuzz(input);
+    Result result = fn(input);
 
     /* check the result against the expected value */
     if (cc_eq(result, expected)) {
       results.ok++;
     } else {
       results.failed++;
-      printf("Failed n = %d\n", input.n);
-      printf("Result: ");
-      cc_print(result);
-      printf("Expected: ");
-      cc_print(expected);
+      printf("ERROR:\n");
+      cc_print_input(input);
+      cc_print_result(result);
+      cc_print_expected(expected);
       printf("\n");
     }
 
