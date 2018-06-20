@@ -1,8 +1,8 @@
 /**
-   challenges/util.c
+   challenges/fizzbuzz/c/util.c
    ====================================================
    CREATED: 2018-06-10
-   UPDATED: 2018-06-19
+   UPDATED: 2018-06-20
    VERSION: 1.2.0
    AUTHOR: wlharvey4
    ABOUT: Instead of  sending JSON  to the  challenges
@@ -67,7 +67,7 @@ int cc_eq(Result result, Result expected) {
   return ((result.fb_t == expected.fb_t) && (result.fb == expected.fb));
 }
 
-void cc_print(Result fb) {
+void cc_print_fb(Result fb) {
   switch(fb.fb_t) {
   case 0:
     printf("%d\n", fb.fb);
@@ -89,4 +89,18 @@ void cc_print(Result fb) {
     printf("ERROR printing fb: unknown type");
     exit (-1);
   }
+}
+
+void cc_print_input(Input input) {
+  printf("Input: n = %d\n", input.n);
+}
+
+void cc_print_result(Result result) {
+  printf("Result:\n");
+  cc_print_fb(result);
+}
+
+void cc_print_expected(Result expected) {
+  printf("Expected:\n");
+  cc_print_fb(expected);
 }
