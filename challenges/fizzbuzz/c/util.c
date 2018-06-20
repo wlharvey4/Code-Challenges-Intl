@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-06-10
    UPDATED: 2018-06-19
-   VERSION: 1.1.0
+   VERSION: 1.2.0
    AUTHOR: wlharvey4
    ABOUT: Instead of  sending JSON  to the  challenges
           implemented  in C,  create a  helper function
@@ -63,7 +63,7 @@ Input_Result * cc_convert(json_t * params, json_t * expected) {
   return input_expected;
 }
 
-int cc_cmp(Result result, Result expected) {
+int cc_eq(Result result, Result expected) {
   return ((result.fb_t == expected.fb_t) && (result.fb == expected.fb));
 }
 

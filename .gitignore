@@ -7,3 +7,4 @@ _build/*
 *.cm?
 __pycache__/
 *.pyc
+_check*

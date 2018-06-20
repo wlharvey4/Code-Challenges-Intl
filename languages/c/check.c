@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-06-10
    UPDATED: 2018-06-19
-   VERSION: 1.1.0
+   VERSION: 1.2.0
    AUTHOR: wlharvey4
    ABOUT: Test runner for C implementation
    NOTES: 
@@ -101,7 +101,7 @@ int main (int argc, char ** argv) {
     Result result = fn(input);//fizzbuzz(input);
 
     /* check the result against the expected value */
-    if (cc_cmp(result, expected)) {
+    if (cc_eq(result, expected)) {
       results.ok++;
     } else {
       results.failed++;
