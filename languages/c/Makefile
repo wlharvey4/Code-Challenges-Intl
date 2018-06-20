@@ -9,6 +9,10 @@
 #	 module, as  `_check`, then runs  the `_check`
 #	 program  against the  code challenge  through
 #	 dynamic linking and loading;
+#	 also contains an `init' rule that creates a new
+#	 directory and places the `util.h' template file
+#	 inside; `init' is invoke with the name of the new
+#	 code challenge.
 # NOTES: `check <code-challenge>`' is invoked as a shell
 #	 which   runs  a   Makefile  based   upon  the
 #	 code-challenge passed by  the shell script as
@@ -19,6 +23,7 @@
 # ----------------------------------------------------
 
 CC = 
+DATE := $(shell date +"%Y-%m-%d")
 UTIL := util
 CHECK := check
 
@@ -58,3 +63,9 @@ clean:
 .Phony:		clean-all
 clean-all:	clean
 		rm -fr ${LANG_DIR}/_${CHECK} ${LANG_DIR}/_${CHECK}.dSYM
+
+.Phony:		init
+init:
+		mkdir -p ${CC_DIR}/ && \
+		cp ${LANG_DIR}/util.h.template ${CC_DIR}/util.h && \
+		sed -i '' -e 's/\<code-challenge\>/${CC}/g' -e 's/\<date\>/${DATE}/' ${CC_DIR}/util.h

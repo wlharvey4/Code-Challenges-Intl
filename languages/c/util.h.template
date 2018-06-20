@@ -1,7 +1,7 @@
 /**
-   challenges/util.h
+   challenges/<code-challenge>/c/util.h
    ====================================================
-   CREATED: 2018-06-19
+   CREATED: <date>
    VERSION: 0.0.1
    AUTHOR: wlharvey4
    ABOUT: Instead of  sending JSON  to the  challenges
