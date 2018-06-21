@@ -1,8 +1,8 @@
 # languages/c/Makefile
 # ====================================================
 # CREATED: 2018-06-19
-# UPDATED: 2018-06-19
-# VERSION: 1.1.0
+# UPDATED: 2018-06-20
+# VERSION: 1.2.0
 # AUTHOR: wlharvey4
 # ABOUT: Compiles the code challenge given on the command
 #	 line,  and   if  necessary   the  `check.c/h`
@@ -58,14 +58,16 @@ run:
 
 .Phony:		clean
 clean:
-		rm -fr ${CC_DIR}/lib${CC}.dylib*;
+		@rm -fr ${CC_DIR}/lib${CC}.dylib*;
 
 .Phony:		clean-all
 clean-all:	clean
-		rm -fr ${LANG_DIR}/_${CHECK} ${LANG_DIR}/_${CHECK}.dSYM
+		@rm -fr ${LANG_DIR}/_${CHECK} ${LANG_DIR}/_${CHECK}.dSYM
 
 .Phony:		init
 init:
-		mkdir -p ${CC_DIR}/ && \
+		@mkdir -p ${CC_DIR}/ && \
 		cp ${LANG_DIR}/util.h.template ${CC_DIR}/util.h && \
-		sed -i '' -e 's/\<code-challenge\>/${CC}/g' -e 's/\<date\>/${DATE}/' ${CC_DIR}/util.h
+		cp ${LANG_DIR}/util.c.template ${CC_DIR}/util.c && \
+		sed -i '' -e 's/\<code-challenge\>/${CC}/g' -e 's/\<date\>/${DATE}/' ${CC_DIR}/util.[hc] && \
+		echo "Successfully created ${CC_DIR} and placed init.c and init.h inside"
