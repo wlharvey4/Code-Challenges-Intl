@@ -3,12 +3,16 @@
 # perl/check.pl
 # ====================================================
 # CREATED: 2018-05-19
-# UPDATED: 2018-06-06
-# VERSION 1.0.0
+# UPDATED: 2018-07-04
+# VERSION 1.1.0
 # AUTHOR: wlharvey4
 # ABOUT: Test script for perl Perl code challenges
 # USAGE: ./check <code-challenge>
 # NOTES:
+# CHANGE-LOG:
+#   v1.1.0: added `eval' (i.e., `try') around check
+#           for $e->isa Boolean because a null $e
+#           throws an error.
 # ----------------------------------------------------
 
 # pragmas
@@ -59,7 +63,9 @@ for my $test (@$jsonData) {
     $i++;
     my $p = $test->{params};
     my $e = $test->{expected};
-    if ($e->isa("JSON::PP::Boolean")) { $e = boolean($e) } # need to convert JSON boolean to Perl boolean
+    if (eval { $e->isa("JSON::PP::Boolean") }) {  # need to convert JSON boolean to Perl boolean
+	$e = boolean($e)			  # a null $e will throw an error, so simply ignore
+    }
     my $r = fn($p);
     assertError($p, $r, $e)  unless eq_deeply($r, $e);
 }

@@ -1,0 +1,7 @@
+[
+  {"params": {"str": "apple"}, "expected": "elppa"},
+  {"params": {"str": "hello"}, "expected": "olleh"},
+  {"params": {"str": "Greetings!"}, "expected": "!sgniteerG"},
+  {"params": {"str": "z"}, "expected": "z"},
+  {"params": {"str": ""}, "expected": ""}
+]
