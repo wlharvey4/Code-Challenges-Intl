@@ -3,12 +3,16 @@
    ====================================================
    CREATED: 2018-06-10
    UPDATED: 2018-06-20
-   VERSION: 1.1.0
+   VERSION: v1.1.0
    AUTHOR: wlharvey4
    ABOUT: Header for check.c, C test runner
    NOTES: This implementation is dependent upon Jansson (www.digip.org/jansson),
           currently at ver 2.11 for JSON parsing; it installs by default into
 	  /usr/local/lib and /usr/local/include.
+   CHANGE-LOG:
+   ....................................................
+   v1.1.0 2018-07-05T16:09:00
+   updated format
    ----------------------------------------------------
  */
 

@@ -2,14 +2,18 @@
    challenges/fizzbuzz/c/util.c
    ====================================================
    CREATED: 2018-06-10
-   UPDATED: 2018-06-20
-   VERSION: 1.2.0
+   UPDATED: 2018-07-05
+   VERSION: 1.2.1
    AUTHOR: wlharvey4
    ABOUT: Instead of  sending JSON  to the  challenges
           implemented  in C,  create a  helper function
           util.c that converts  the params and expected
           values to proper C values.
    NOTES:
+   CHANGE-LOG
+   ....................................................
+   v1.2.1 2018-07-05T15:58:00
+   converted Result type to Result pointer type
    ----------------------------------------------------
   */
 
@@ -63,17 +67,17 @@ Input_Result * cc_convert(json_t * params, json_t * expected) {
   return input_expected;
 }
 
-int cc_eq(Result result, Result expected) {
-  return ((result.fb_t == expected.fb_t) && (result.fb == expected.fb));
+int cc_eq(Result * result, Result * expected) {
+  return ((result->fb_t == expected->fb_t) && (result->fb == expected->fb));
 }
 
-void cc_print_fb(Result fb) {
-  switch(fb.fb_t) {
+void cc_print_fb(Result * fb) {
+  switch(fb->fb_t) {
   case 0:
-    printf("%d\n", fb.fb);
+    printf("%d\n", fb->fb);
     break;
   case 1:
-    switch(fb.fb) {
+    switch(fb->fb) {
     case 2:
       printf("%s\n", FIZZ);
       break;
@@ -95,12 +99,12 @@ void cc_print_input(Input input) {
   printf("Input: n = %d\n", input.n);
 }
 
-void cc_print_result(Result result) {
+void cc_print_result(Result * result) {
   printf("Result:\n");
   cc_print_fb(result);
 }
 
-void cc_print_expected(Result expected) {
+void cc_print_expected(Result * expected) {
   printf("Expected:\n");
   cc_print_fb(expected);
 }

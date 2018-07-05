@@ -2,8 +2,8 @@
    languages/c/check.c
    ====================================================
    CREATED: 2018-06-10
-   UPDATED: 2018-06-20
-   VERSION: 1.3.0
+   UPDATED: 2018-07-05
+   VERSION: v1.3.1
    AUTHOR: wlharvey4
    ABOUT: Test runner for C implementation
    NOTES: 
@@ -23,6 +23,12 @@
      lldb -- check <code-challenge>
      (lldb) breakpoint set --name main
      (lldb) run
+   CHANGE-LOG:
+   ....................................................
+   v1.3.1 2018-07-05T16:00:00
+   converted Result type to Result pointer type so that
+   memory can be allocated in the code challenge and then
+   freed under all circumstances
    ----------------------------------------------------
  */
 
@@ -33,7 +39,7 @@ int main (int argc, char ** argv) {
   /* LOCAL VARIABLES */
   /*******************/
   void * handle;	 /* reference to dynamically-linked and loaded code challenge */
-  Result (*fn)(Input);	 /* reference to function exported by the code challenge */
+  Result * (*fn)(Input); /* reference to function exported by the code challenge */
   char * cc_name;        /* code challenge name from command line */
   char cc_dir[BUFSIZ];	 /* full path to code challenge */
   char ccjson[BUFSIZ];   /* path to code challenge JSON data file */
@@ -95,10 +101,10 @@ int main (int argc, char ** argv) {
     /* convert the JSON values into C structs using code challenge utility function */
     Input_Result * input_expected = cc_convert(params_json, expected_json);
     Input input       = * input_expected->input;
-    Result expected = * input_expected->expected;
+    Result * expected = input_expected->expected;
 
     /* call the code challenge with the Input value */
-    Result result = fn(input);
+    Result * result = fn(input);
 
     /* check the result against the expected value */
     if (cc_eq(result, expected)) {
@@ -115,6 +121,7 @@ int main (int argc, char ** argv) {
     free(input_expected->input);
     free(input_expected->expected);
     free(input_expected);
+    free(result);
   }
 
   printf("\nResults:\n");

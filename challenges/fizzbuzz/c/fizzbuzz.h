@@ -2,16 +2,23 @@
    challenges/fizzbuzz/c/fizzbuzz.h
    ====================================================
    CREATED: 2018-06-10
-   UPDATED: 2018-06-11
-   VERSION: 1.0.0
+   UPDATED: 2018-07-05
+   VERSION: v1.0.1
    AUTHOR: wlharvey4
    ABOUT: Header for fizzbuzz.c
    NOTES:
+   CHANGE-LOG:
+   ....................................................
+   v1.0.1 2018-07-05T16:00:00
+   converted return type to pointer type (Fizzbuzz *);
+   added <stdlib.h> so that memory can be malloc'ed
    ----------------------------------------------------
   */
 
 # ifndef CC_FIZZBUZZ
 # define CC_FIZZBUZZ
+
+# include <stdlib.h>
 
 # define FIZZ "fizz"
 # define BUZZ "buzz"
@@ -38,6 +45,6 @@ typedef struct {
 } Input;
 
 // Fizzbuzz prototype
-Fizzbuzz fizzbuzz(Input);
+Fizzbuzz * fizzbuzz(Input);
 
 # endif
