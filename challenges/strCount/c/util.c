@@ -2,10 +2,15 @@
    challenges/strCount/c/util.c
    ====================================================
    CREATED: 2018-06-20
-   VERSION: 1.0.0
+   UPDATED: 2017-07-05
+   VERSION: v1.0.1
    AUTHOR: wlharvey4
    ABOUT: Utility functions for strCount.c
    NOTES: 
+   CHANGE-LOG:
+   ....................................................
+   v1.0.1 2018-07-05T16:13:00
+   convert return type to pointer
    ----------------------------------------------------
  */
 
@@ -28,18 +33,18 @@ Input_Result * cc_convert(json_t * params, json_t * expected) {
   return input_expected;
 }
 
-int cc_eq(Result result, Result expected) {
-  return result == expected;
+int cc_eq(Result * result, Result * expected) {
+  return * result ==  * expected;
 }
 
 void cc_print_input(Input input) {
   printf("Input:\tstr1 = %s\n\tstr2 = `%c\'\n", input.str1, input.str2);
 }
 
-void cc_print_result(Result result) {
-  printf("Result: %d\n", result);
+void cc_print_result(Result * result) {
+  printf("Result: %d\n", * result);
 }
 
-void cc_print_expected(Result expected) {
-  printf("Expected: %d\n", expected);
+void cc_print_expected(Result * expected) {
+  printf("Expected: %d\n", * expected);
 }
