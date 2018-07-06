@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-07-05
    UPDATED: 2018-07-05
-   VERSION: v0.1.0
+   VERSION: v0.1.1
    AUTHOR: wlharvey4
    ABOUT: reverseString.c utility implementation
    NOTES:
@@ -14,6 +14,9 @@
    ....................................................
    v0.1.0 2018-07-05T17:36:00
    cc works, but gives two warnings about const being discarded
+   ....................................................
+   v0.1.1 2018-07-05T22:45:00
+   removed unnecessary save to str before assigning to _input->str
    ----------------------------------------------------
  */
 
@@ -25,8 +28,7 @@ Input_Result * cc_convert(json_t * params, json_t * expected) {
   Result * _expected = malloc(sizeof(Result));
 
   /* Input param str */
-  String str = json_string_value(json_object_get(params, "str"));
-  _input->str = str;
+  _input->str = json_string_value(json_object_get(params, "str"));
 
   /* Result expected */
   *_expected = json_string_value(expected);

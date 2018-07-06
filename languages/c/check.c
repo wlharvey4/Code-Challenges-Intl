@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-06-10
    UPDATED: 2018-07-05
-   VERSION: v1.3.1
+   VERSION: v1.3.2
    AUTHOR: wlharvey4
    ABOUT: Test runner for C implementation
    NOTES: 
@@ -23,12 +23,17 @@
      lldb -- check <code-challenge>
      (lldb) breakpoint set --name main
      (lldb) run
+   TODO: Free *result if also a malloc'ed pointer (see reverseString)
    CHANGE-LOG:
    ....................................................
    v1.3.1 2018-07-05T16:00:00
    converted Result type to Result pointer type so that
    memory can be allocated in the code challenge and then
    freed under all circumstances
+   ....................................................
+   v1.3.2 2018-07-05T23:40:00
+   added TODO and note about *result not being free'd without
+   compiler warning
    ----------------------------------------------------
  */
 
@@ -104,7 +109,8 @@ int main (int argc, char ** argv) {
     Result * expected = input_expected->expected;
 
     /* call the code challenge with the Input value */
-    Result * result = fn(input);
+    Result * result = fn(input); /* if *result is a pointer, it needs to be free'd,
+				    but results in a compiler warning */
 
     /* check the result against the expected value */
     if (cc_eq(result, expected)) {
@@ -121,6 +127,7 @@ int main (int argc, char ** argv) {
     free(input_expected->input);
     free(input_expected->expected);
     free(input_expected);
+    /* free(*result); <- results in compiler warning but not error */
     free(result);
   }
 
