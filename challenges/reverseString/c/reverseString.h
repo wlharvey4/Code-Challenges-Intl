@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-07-05
    UPDATED: 2018-07-05
-   VERSION: v0.1.0
+   VERSION: v0.1.1
    AUTHOR: wlharvey4
    ABOUT: Given a string, return the string reversed
    NOTES:
@@ -14,6 +14,10 @@
    ....................................................
    v0.1.0 2018-07-05T17:36:00
    cc works, but gives two warnings about const being discarded
+   ....................................................
+   v0.1.1 2018-07-05T19:00:00
+   changed typedef char * String to typedef const char * String,
+   which helped to removed warnings
    ----------------------------------------------------
  */
 
@@ -23,7 +27,7 @@
 # include <stdlib.h>
 # include <string.h>
 
-typedef char * String;
+typedef const char * String;
 
 /* an input to reverseString is a String */
 typedef struct {
