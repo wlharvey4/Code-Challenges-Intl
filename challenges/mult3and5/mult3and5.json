@@ -1,0 +1,10 @@
+[
+  {"params": {"n": 10}, "expected": 23},
+  {"params": {"n": 11}, "expected": 33},
+  {"params": {"n": 12}, "expected": 33},
+  {"params": {"n": 13}, "expected": 45},
+  {"params": {"n": 14}, "expected": 45},
+  {"params": {"n": 15}, "expected": 45},
+  {"params": {"n": 16}, "expected": 60},
+  {"params": {"n": 1000}, "expected": 233168}
+]
