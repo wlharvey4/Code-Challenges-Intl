@@ -1,18 +1,20 @@
-#! /usr/bin/env perl
+#! /usr/bin/env perl5
 
 # perl/check.pl
 # ====================================================
 # CREATED: 2018-05-19
-# UPDATED: 2018-07-04
-# VERSION 1.1.0
+# UPDATED: 2018-09-04
+# VERSION 1.1.1
 # AUTHOR: wlharvey4
 # ABOUT: Test script for perl Perl code challenges
 # USAGE: ./check <code-challenge>
 # NOTES:
 # CHANGE-LOG:
-#   v1.1.0: added `eval' (i.e., `try') around check
-#           for $e->isa Boolean because a null $e
-#           throws an error.
+#   v1.1.0 2018-07-04: added `eval' (i.e., `try')
+#          around check for $e->isa Boolean because
+#          a null $e throws an error.
+#   v1.1.1 2018-09-04: changed the interpreter from
+#          perl to perl5
 # ----------------------------------------------------
 
 # pragmas
