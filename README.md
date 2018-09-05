@@ -77,3 +77,7 @@ For Perl, you would be in the directory `Code-Challenges-Intl/languages/perl`,
 and you would execute `./check fizzbuzz` or `./check isUnique`.  The
 program `check` will report failed tests, and final statistics for
 every language.
+
+## Interesting Articles
+Learn Every Language
+https://blog.bradfieldcs.com/in-2017-learn-every-language-59b11f68eee
