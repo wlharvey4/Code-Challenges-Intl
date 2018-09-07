@@ -1,10 +1,11 @@
 # mult3and5/perl/mult3and5.pm
 # ============================================================================
 # CREATED: 2018-09-04
-# VERSION: 1.0.0
+# UPDATED: 2018-09-07
+# VERSION: 1.1.0
 # AUTHOR:  wlharvey4
-# ABOUT:   From ...
-# DIRECTIVE: If we list all the natural numbers below 10 that are
+# USAGE: perl5 mult3and5.pm <n>
+# ABOUT: If we list all the natural numbers below 10 that are
 # multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these
 # multiples is 23.  Find the sum of all the multiples of 3 or 5 below
 # 1000.
@@ -27,21 +28,28 @@
 # is a TODO to find it and use it here.
 # CHANGE HISTORY:
 #   v1.0.0 2018-09-04: Initial creation
+#   v1.1.0 2018-09-05: Started using packages, so added Fizzbuzz to fizzbuzz()
+#                      also started creating packages as modulinos, callable
+#	               as both a module and a script
 # ----------------------------------------------------------------------------
+
+package Mult3and5;
 
 use strict;
 use warnings;
 use v5.16;
-use lib '../../challenges';
+use lib '../../../challenges';
 require fizzbuzz::perl::fizzbuzz;
 
+# params => {n => <n>} where <n> is some positive integer
+# ==> <total> where <total> is some positive integer
 sub mult3and5 {
-    my $p = shift;
-    my $n = $p->{n};
+    my $params = shift;
+    my $n = $params->{n};
     my $total = 0;
 
     for (my $i = 0; $i < $n; $i++) {
-	my $r = fizzbuzz({n => $i});
+	my $r = Fizzbuzz::fizzbuzz({n => $i});
 	if ( $r =~ /fizz|buzz/ ) {
 	    $total += $i;
 	}
@@ -49,5 +57,15 @@ sub mult3and5 {
 
     return $total;
 }
+
+# @_ := @ARGV (as below)
+sub main {
+    my $n = shift;
+    my $m35 = mult3and5({ n => $n });
+    say "The sum of multiples of 3 and 5 is $m35";
+}
+
+# @ARGV := <n> where <n> is some positive integer
+main(@ARGV) unless caller();
 
 1;
