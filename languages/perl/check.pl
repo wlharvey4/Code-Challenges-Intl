@@ -3,8 +3,8 @@
 # perl/check.pl
 # ====================================================
 # CREATED: 2018-05-19
-# UPDATED: 2018-09-04
-# VERSION 1.1.1
+# UPDATED: 2018-09-07
+# VERSION 2.0.0
 # AUTHOR: wlharvey4
 # ABOUT: Test script for perl Perl code challenges
 # USAGE: ./check <code-challenge>
@@ -15,6 +15,10 @@
 #          a null $e throws an error.
 #   v1.1.1 2018-09-04: changed the interpreter from
 #          perl to perl5
+#   v2.0.0 2018-09-07: Added package names to each
+#	   perl module; updated routine to alias the
+#	   package name along with the code challenge
+#	   name
 # ----------------------------------------------------
 
 # pragmas
@@ -40,19 +44,24 @@ my $cc;		# the name of the code challenge from the CL invocation
 my $ccPM;	# the code challenge module path
 my $ccJSON;	# the code challenge data path
 my $jsonData;	# the code challenge data storage
+my $packg;	# the uppercased name of $cc (a package name)
 
 # get the Code Challenge name from the command-line argument
 $cc = $ARGV[0];
 unless ($cc) {
     die qq{You need to include the name of a code challenge: i.e., './check <code-challenge>'}
 }
+$packg = ucfirst $cc;
 
 # construct paths to resources
 $ccPM = catfile('..', '..', $CHALLENGES, ${cc}, 'perl', ${cc}.'.pm');
 $ccJSON = catfile('..', '..', $CHALLENGES, ${cc}, ${cc}.'.json');
 
 require $ccPM; # load the code challenge module
-*fn = *{$cc};  # alias the code challenge name (&{$cc}) to &fn
+# alias the Code Challenge's symbol table `<packg>::<cc>' to the `main::fn' symbol table, allowing
+# `&main::fn' access to `<&packg>::<cc>'
+*fn = *{$packg."::".$cc};
+
 $jsonData = eval { # load and decode the test data into a Perl hash reference
     local $/;
     open JSON, '<', $ccJSON;
