@@ -3,25 +3,46 @@
 # fibonacci.pm
 ###################################################
 # CREATED: 2018-09-07
-# MODIFIED:
-# VERSION: 1.0.0
+# UPDATED: 2018-09-08
+# VERSION: 1.1.0
 # AUTHOR: wlharvey4
 # USAGE: perl5 fibonacci.pm <n>
 # CHALLENGE: Fibonacci sequence in Perl
 # NOTES:
-#  -- Start making these scripts callable is a
-# module or as a script (called a `Modulino' by
-# brian d foy;
-#  -- also start using package identifiers
+#  -- start using package identifiers
+#  -- Start making these packages callable either as a
+#     module (from another package) or a script (from
+#     the command line), which has been named a `Modulino'
+#     by brian d foy;
+#  -- NOTE that beginning with Perl 5.28, it is possible to
+#     initialize a state variable in list context, so
+#     when I switch to using that version, update this
+#     code to use a state @cache;
+#  -- Found the `bigint' package, which allows
+#     arbitrarily large numbers to be created (limited
+#     by memory only)
+#  -- discovered that the message re: `deep recursion'
+#     is coming from the `warnings' pragma, so it can
+#     be quieted without issue in this case; when the
+#     `bigint' pragma is activated, it sees the final `1'
+#     as a number to be processed, and then the `warnings'
+#     pragma issues a `void context' message; this can be
+#     avoided by changing the final `1' to a print ""
+#     statement instead.
 # CHANGE_LOG:
-#	2018-09-07 ver 1.0.0: Initial commit
+#   -- 1.0.0 2018-09-07: Initial commit
+#   -- 1.1.0 2018-09-08: Added `bigint' package; quieted
+#            the `deep recursion' and 'void' warnings;
+#	     clean up code a bit
 ###################################################
 
 package Fibonacci;
 
 use strict;
 use warnings;
+no warnings qw(recursion);
 use v5.16;
+use bigint;
 
 my @cache = (1, 1);
 
@@ -30,13 +51,10 @@ my @cache = (1, 1);
 # ==> <fib_value> where <fib_value> is the fibonacci term (an integer)
 #     for the nth fibonacci sequence
 sub fibonacci {
-    my $p = shift;
-    my $n = $p->{n};
-
+    my $n = $_[0]->{n};
+    
     return $cache[$n] if scalar @cache > $n;
-    my $fib = fibonacci({ n => $n - 2 }) + fibonacci({ n => $n - 1 });
-    push @cache, $fib;
-    return $fib;
+    return $cache[$n] = fibonacci({ n => $n - 2 }) + fibonacci({ n => $n - 1 });
 }
 
 # @_ := @ARGV (as below)
@@ -50,5 +68,4 @@ sub main {
 # nth fibonacci sequence
 main(@ARGV) if not caller();
 
-1;
-
+print "";

@@ -3,8 +3,8 @@
 # perl/check.pl
 # ====================================================
 # CREATED: 2018-05-19
-# UPDATED: 2018-09-07
-# VERSION 2.0.0
+# UPDATED: 2018-09-08
+# VERSION 2.1.0
 # AUTHOR: wlharvey4
 # ABOUT: Test script for perl Perl code challenges
 # USAGE: ./check <code-challenge>
@@ -19,6 +19,13 @@
 #	   perl module; updated routine to alias the
 #	   package name along with the code challenge
 #	   name
+#   v2.1.0 2018-09-08: Added `bigint' pragma to
+#          `fibonacci' code challenge, which broke the
+#	   `eq_deeply' check because the return value
+#	   is a Math::BigInt object; so now, check to
+#	   see if the return value is a Math::BigInt
+#	   object, and if so, then convert the `expected'
+#	   value to a Math::BigInt object also
 # ----------------------------------------------------
 
 # pragmas
@@ -78,6 +85,10 @@ for my $test (@$jsonData) {
 	$e = boolean($e)			  # a null $e will throw an error, so simply ignore
     }
     my $r = fn($p);
+    # if a code challenge uses the `bigint' pragma (e.g., `fibonacci'), need to convert the
+    # `expected' value to a Math::BigInt object in order to compare; don't want to simply load
+    # the `bigint' pragma because then all math operations will be converted into Math::BigInt ones
+    if ($r->isa("Math::BigInt")) { $e = Math::BigInt->new($e); }
     assertError($p, $r, $e)  unless eq_deeply($r, $e);
 }
 
