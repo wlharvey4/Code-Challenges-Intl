@@ -8,3 +8,4 @@ _build/*
 __pycache__/
 *.pyc
 _check*
+*.o

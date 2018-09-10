@@ -12,5 +12,6 @@
   {"params": {"n": 12}, "expected": 233},
   {"params": {"n": 13}, "expected": 377},
   {"params": {"n": 14}, "expected": 610},
-  {"params": {"n": 15}, "expected": 987}
+  {"params": {"n": 15}, "expected": 987},
+  {"params": {"n": 16}, "expected": 1597}
 ]
