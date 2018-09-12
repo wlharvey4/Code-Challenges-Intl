@@ -2,13 +2,19 @@
    challenges/fizzbuzz/java/Fizzbuzz.java
    ==================================================
    CREATED: 2018-09-11
-   UPDATED:
-   VERSION: 0.0.1
+   UPDATED: 2018-09-11
+   VERSION: 0.0.2
+   USAGE: java Fizzbuzz <# #>
    AUTHOR: wlharvey4
    ABOUT: Fizzbuzz implemented in Java
    NOTES: This is a working version of Fizzbuzz.java
           but only from the command-line at the 
 	  moment; need to implement a test runner.
+   CHANGE-LOG:
+   --version 0.0.1 2018-09-11
+     Initial commit
+   --version 0.0.2 2018-09-11
+     Added USAGE; changed toString() of num
    ==================================================
  */
 
@@ -62,7 +68,7 @@ public class Fizzbuzz {
 	    return this.num == other.num;
 	}
 	public String toString() {
-	    return Integer.valueOf(num).toString();
+	    return Integer.toString(num);
 	}
     }
 
