@@ -3,7 +3,7 @@
    ==================================================
    CREATED: 2018-09-11
    UPDATED: 2018-09-11
-   VERSION: 0.0.2
+   VERSION: 0.1.0
    USAGE: java Fizzbuzz <# #>
    AUTHOR: wlharvey4
    ABOUT: Fizzbuzz implemented in Java
@@ -15,21 +15,65 @@
      Initial commit
    --version 0.0.2 2018-09-11
      Added USAGE; changed toString() of num
+   --version 0.1.0 2018-09-11
+     + rearranged code for better readability;
+     + reimplemented the fizzbuzz calculation;
+     + added comments
    ==================================================
  */
 
 public class Fizzbuzz {
+
+    private int n;	  // the input number
+    private F fizzbuzz;	  // the calculated Fizzbuzz output
+    	                  // can be one of FIZZ,BUZZ,FIZZBUZZ, or n
+
+    /* the constructor; calculates F fizzbuzz from int n */
+    public Fizzbuzz(int n) {
+	this.n = n;
+	
+	boolean fizz = !(n % 3 != 0);
+	boolean buzz = !(n % 5 != 0);
+	boolean fizzbuzz = fizz && buzz;
+	
+	if (fizz || buzz || fizzbuzz) {
+	    if (fizzbuzz)  this.fizzbuzz = new FFB(FB.FIZZBUZZ);
+	    else if (fizz) this.fizzbuzz = new FFB(FB.FIZZ);
+	    else           this.fizzbuzz = new FFB(FB.BUZZ);
+	}
+	else this.fizzbuzz = new FNum(n);
+    }
+
+    public int getN() {		// getter for n
+	return n;
+    }
+
+    public F getFizzbuzz() {	// getter for fizzbuzz
+	return fizzbuzz;
+    }
+
+    public void calcFizzbuzz() {// prints a nice message
+	System.out.println("Fizzbuzz(" + getN() + ") = " + getFizzbuzz());
+    }
+
+    public boolean eq(F f1, F f2) {
+	return f1.eq(f2);
+    }
+
+
+    
+    
+    
     private enum FB {
 	FIZZ, BUZZ, FIZZBUZZ
     }
 
-    private int n;
-    private F fizzbuzz;
-
+    /* F is the type of fizzbuzz, above */
     private abstract class F {
 	abstract boolean eq(F f);
     }
     
+    /* holds an enum */
     private class FFB extends F {
 	FB fb;
 	
@@ -51,6 +95,7 @@ public class Fizzbuzz {
 	}
     }
     
+    /* holds an integer */
     private class FNum extends F {
 	int num;
 	
@@ -70,37 +115,6 @@ public class Fizzbuzz {
 	public String toString() {
 	    return Integer.toString(num);
 	}
-    }
-
-    public Fizzbuzz(int n) {
-	this.n = n;
-	
-	boolean fizz = !(n % 3 != 0);
-	boolean buzz = !(n % 5 != 0);
-	boolean fizzbuzz = fizz && buzz;
-	
-	if (fizzbuzz) this.fizzbuzz = new FFB(FB.FIZZBUZZ);
-	else if (fizz || buzz) {
-	    if (fizz) this.fizzbuzz = new FFB(FB.FIZZ);
-	    else this.fizzbuzz = new FFB(FB.BUZZ);
-	}
-	else this.fizzbuzz = new FNum(n);
-    }
-
-    public boolean eq(F f1, F f2) {
-	return f1.eq(f2);
-    }
-
-    public int getN() {
-	return n;
-    }
-
-    public F getFizzbuzz() {
-	return fizzbuzz;
-    }
-
-    public void calcFizzbuzz() {
-	System.out.println("Fizzbuzz(" + getN() + ") = " + getFizzbuzz());
     }
 
     public static void main(String[] args) {
