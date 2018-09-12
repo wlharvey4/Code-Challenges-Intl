@@ -3,13 +3,17 @@
    ==================================================
    CREATED: 2018-09-11
    UPDATED: 2018-09-11
-   VERSION: 0.1.0
+   VERSION: 0.1.1
    USAGE: java Fizzbuzz <# #>
    AUTHOR: wlharvey4
    ABOUT: Fizzbuzz implemented in Java
    NOTES: This is a working version of Fizzbuzz.java
-          but only from the command-line at the 
-	  moment; need to implement a test runner.
+	  that does not rely upon introspection to
+	  do its thing; rather, it relies upon
+	  subclassing and dynamic dispatching;
+          at the moment it works only from the
+	  command-line, so need to implement a test
+	  runner.
    CHANGE-LOG:
    --version 0.0.1 2018-09-11
      Initial commit
@@ -19,14 +23,16 @@
      + rearranged code for better readability;
      + reimplemented the fizzbuzz calculation;
      + added comments
+   --version 0.1.1 2018-09-11
+     + updated comments and Notes
    ==================================================
  */
 
 public class Fizzbuzz {
 
-    private int n;	  // the input number
-    private F fizzbuzz;	  // the calculated Fizzbuzz output
-    	                  // can be one of FIZZ,BUZZ,FIZZBUZZ, or n
+    private int n;	// the input number
+    private F fizzbuzz;	// the calculated Fizzbuzz output
+    			// can be one of FIZZ,BUZZ,FIZZBUZZ, or n
 
     /* the constructor; calculates F fizzbuzz from int n */
     public Fizzbuzz(int n) {
@@ -56,24 +62,25 @@ public class Fizzbuzz {
 	System.out.println("Fizzbuzz(" + getN() + ") = " + getFizzbuzz());
     }
 
-    public boolean eq(F f1, F f2) {
-	return f1.eq(f2);
+    public boolean eq(F f1, F f2) {	// compare two fizzbuzz results for equality
+	return f1.eq(f2);		// for the rest runner to use
     }
 
 
     
-    
+    /* INTERNAL IMPLEMENTATION DETAILS */
     
     private enum FB {
 	FIZZ, BUZZ, FIZZBUZZ
     }
 
-    /* F is the type of fizzbuzz, above */
+    /* F is the type of fizzbuzz in the class Fizzbuzz above;
+       it can hold an enum or an integer */
     private abstract class F {
 	abstract boolean eq(F f);
     }
     
-    /* holds an enum */
+    /* subclass that holds an enum */
     private class FFB extends F {
 	FB fb;
 	
@@ -95,7 +102,7 @@ public class Fizzbuzz {
 	}
     }
     
-    /* holds an integer */
+    /* subclass that holds an integer */
     private class FNum extends F {
 	int num;
 	
