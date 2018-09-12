@@ -3,7 +3,7 @@
    ==================================================
    CREATED: 2018-09-11
    UPDATED: 2018-09-11
-   VERSION: 0.1.1
+   VERSION: 0.1.2
    USAGE: java Fizzbuzz <# #>
    AUTHOR: wlharvey4
    ABOUT: Fizzbuzz implemented in Java
@@ -14,6 +14,16 @@
           at the moment it works only from the
 	  command-line, so need to implement a test
 	  runner.
+
+	  See: "Substitutes for Missing C Constructs"
+	  by Joshua Bloch
+	  http://www.oracle.com/technetwork/java/page1-139488.html
+	  "The designers of the Java programming language chose to
+	  omit the union construct because there is a much better
+	  mechanism for defining a single data type capable of
+	  representing objects of various types: subtyping. A
+	  discriminated union is really just a pallid imitation of a
+	  class hierarchy."  [what a great word --- `pallid'!]
    CHANGE-LOG:
    --version 0.0.1 2018-09-11
      Initial commit
@@ -25,6 +35,10 @@
      + added comments
    --version 0.1.1 2018-09-11
      + updated comments and Notes
+   --version 0.1.2 2018-09-11
+     + Added reference to Joshua Bloch comment; revised
+       fizzbuzz calculation to use temp variable and only
+       one assignment instead of three
    ==================================================
  */
 
@@ -43,9 +57,11 @@ public class Fizzbuzz {
 	boolean fizzbuzz = fizz && buzz;
 	
 	if (fizz || buzz || fizzbuzz) {
-	    if (fizzbuzz)  this.fizzbuzz = new FFB(FB.FIZZBUZZ);
-	    else if (fizz) this.fizzbuzz = new FFB(FB.FIZZ);
-	    else           this.fizzbuzz = new FFB(FB.BUZZ);
+	    FB fb;
+	    if (fizzbuzz)  fb = FB.FIZZBUZZ;
+	    else if (fizz) fb = FB.FIZZ;
+	    else           fb = FB.BUZZ;
+	    this.fizzbuzz = new FFB(fb);
 	}
 	else this.fizzbuzz = new FNum(n);
     }
