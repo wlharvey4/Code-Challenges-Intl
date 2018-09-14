@@ -2,8 +2,8 @@
    challenges/fizzbuzz/java/Fizzbuzz.java
    ==================================================
    CREATED: 2018-09-11
-   UPDATED: 2018-09-11
-   VERSION: 0.1.2
+   UPDATED: 2018-09-13
+   VERSION: 0.1.4
    USAGE: java Fizzbuzz <# #>
    AUTHOR: wlharvey4
    ABOUT: Fizzbuzz implemented in Java
@@ -26,9 +26,9 @@
 	  class hierarchy."  [what a great word --- `pallid'!]
    CHANGE-LOG:
    --version 0.0.1 2018-09-11
-     Initial commit
+     + Initial commit
    --version 0.0.2 2018-09-11
-     Added USAGE; changed toString() of num
+     + Added USAGE; changed toString() of num
    --version 0.1.0 2018-09-11
      + rearranged code for better readability;
      + reimplemented the fizzbuzz calculation;
@@ -39,6 +39,12 @@
      + Added reference to Joshua Bloch comment; revised
        fizzbuzz calculation to use temp variable and only
        one assignment instead of three
+   --version 0.1.3 2018-09-12
+     + Refactored the check for a fizz and a buzz
+     + Refactored to use Input input, which will be from 
+       the JSON data structure
+   --version 0.1.4 2018-09-13
+     + Refactored to use interface F with eq() using double dispatch
    ==================================================
  */
 
@@ -49,11 +55,11 @@ public class Fizzbuzz {
     			// can be one of FIZZ,BUZZ,FIZZBUZZ, or n
 
     /* the constructor; calculates F fizzbuzz from int n */
-    public Fizzbuzz(int n) {
-	this.n = n;
+    public Fizzbuzz(Input input) {
+	this.n = input.n();
 	
-	boolean fizz = !(n % 3 != 0);
-	boolean buzz = !(n % 5 != 0);
+	boolean fizz = (n % 3 == 0);
+	boolean buzz = (n % 5 == 0);
 	boolean fizzbuzz = fizz && buzz;
 	
 	if (fizz || buzz || fizzbuzz) {
@@ -66,21 +72,26 @@ public class Fizzbuzz {
 	else this.fizzbuzz = new FNum(n);
     }
 
-    public int getN() {		// getter for n
+    public int n() {		// getter for n
 	return n;
     }
 
-    public F getFizzbuzz() {	// getter for fizzbuzz
+    public F fizzbuzz() {	// getter for fizzbuzz
 	return fizzbuzz;
     }
 
     public void calcFizzbuzz() {// prints a nice message
-	System.out.println("Fizzbuzz(" + getN() + ") = " + getFizzbuzz());
+	System.out.println("Fizzbuzz(" + n() + ") = " + fizzbuzz());
     }
 
-    public boolean eq(F f1, F f2) {	// compare two fizzbuzz results for equality
-	return f1.eq(f2);		// for the rest runner to use
+    public String toString() {
+	return this.fizzbuzz().toString();
     }
+
+    public boolean eq(Fizzbuzz that) {
+        return this.fizzbuzz().eq(that.fizzbuzz());
+    }
+
 
 
     
@@ -92,58 +103,82 @@ public class Fizzbuzz {
 
     /* F is the type of fizzbuzz in the class Fizzbuzz above;
        it can hold an enum or an integer */
-    private abstract class F {
-	abstract boolean eq(F f);
+    private interface F {
+	boolean eq(F f);
+	boolean eq(FFB f);
+	boolean eq(FNum f);
     }
     
     /* subclass that holds an enum */
-    private class FFB extends F {
-	FB fb;
+    private class FFB implements F {
+	private FB fb;
 	
-	FFB(FB fb) {
+	public FFB(FB fb) {
 	    this.fb = fb;
 	}
 
-	boolean eq(F f) {
-	    return f.eq(this);
+	public FB fb() {
+	    return this.fb;
 	}
-	boolean eq(FFB other) {
-	    return this.fb == other.fb;
+
+	public boolean eq(F that) {
+	    return that.eq(this);
 	}
-	boolean eq(FNum other) {
+
+	public boolean eq(FFB that) {
+	    return this.fb() == that.fb();
+	}
+
+	public boolean eq(FNum that) {
 	    return false;
 	}
+
 	public String toString() {
 	    return fb.toString();
 	}
     }
     
     /* subclass that holds an integer */
-    private class FNum extends F {
-	int num;
+    private class FNum implements F {
+	private int num;
 	
-	FNum(int num) {
+	public FNum(int num) {
 	    this.num = num; 
 	}
 
-	boolean eq(F f) {
-	    return f.eq(this);
+	public int num() {
+	    return this.num;
 	}
-	boolean eq(FFB other) {
+
+	public boolean eq(F that) {
+	    return that.eq(this);
+	}
+
+	public boolean eq(FFB that) {
 	    return false;
 	}
-	boolean eq(FNum other) {
-	    return this.num == other.num;
+
+	public boolean eq(FNum that) {
+	    return this.num() == that.num();
 	}
+
 	public String toString() {
 	    return Integer.toString(num);
 	}
     }
 
     public static void main(String[] args) {
-	Fizzbuzz fb1 = new Fizzbuzz(Integer.valueOf(args[0]));
-	Fizzbuzz fb2 = new Fizzbuzz(Integer.valueOf(args[1]));
+	Input input1 = new Input(Integer.valueOf(args[0]));
+	Input input2 = new Input(Integer.valueOf(args[1]));
+	Fizzbuzz fb1 = new Fizzbuzz(input1);
+	Fizzbuzz fb2 = new Fizzbuzz(input2);
 	fb1.calcFizzbuzz();
 	fb2.calcFizzbuzz();
+	Result result = new Result(fb1);
+	Expected expected = new Expected(fb2);
+
+	System.out.println("Result   (" + result + ")");
+	System.out.println("Expected (" + expected + ")");
+	System.out.println(fb1.eq(fb2));
     }
 }
