@@ -101,8 +101,8 @@ public class Fizzbuzz {
 	FIZZ, BUZZ, FIZZBUZZ
     }
 
-    /* F is the type of fizzbuzz in the class Fizzbuzz above;
-       it can hold an enum or an integer */
+    /* the F interface ties the subclasses together through their
+       equality attributes; an F can hold an enum or an integer */
     private interface F {
 	boolean eq(F f);
 	boolean eq(FFB f);
@@ -111,24 +111,30 @@ public class Fizzbuzz {
     
     /* subclass that holds an enum */
     private class FFB implements F {
-	private FB fb;
+	private FB fb;		// holds an enum FIZZ, BUZZ, or FIZZBUZZ
 	
-	public FFB(FB fb) {
+	public FFB(FB fb) {	// constructor
 	    this.fb = fb;
 	}
 
-	public FB fb() {
+	public FB fb() {	// getter
 	    return this.fb;
 	}
 
+	/* this is where double dispatch takes place; `this' is an FFB
+	   but `that's type is unknown, so let `that' dispatch itself, carrying
+	   `this' FFB with it as an argument.  `this' will pick the correct
+	   overloaded method to use; the same thing happens in FNum */
 	public boolean eq(F that) {
 	    return that.eq(this);
 	}
 
+	/* Enums have their own equality method built-in */
 	public boolean eq(FFB that) {
 	    return this.fb() == that.fb();
 	}
 
+	/* an FFB cannot be equal to an FNum */
 	public boolean eq(FNum that) {
 	    return false;
 	}
