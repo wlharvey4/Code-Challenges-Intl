@@ -1,0 +1,10 @@
+[
+  {"params": {"arr": []}, "expected": null},
+  {"params": {"arr": [0]}, "expected": null},
+  {"params": {"arr": [0,1]}, "expected": null},
+  {"params": {"arr": [0,1,2]}, "expected": null},
+  {"params": {"arr": [0,1,2,1]}, "expected": 1},
+  {"params": {"arr": [0,1,2,1,2,1]}, "expected": 2},
+  {"params": {"arr": [1, 7, 2, 4, 5, 1, 6, 8, 9, 6, 4, 1]}, "expected": 4},
+  {"params": {"arr": [10,9,8,7,6,5,4,3,2,1,10,1,1]}, "expected": 10}
+]

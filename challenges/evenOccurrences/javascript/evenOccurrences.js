@@ -10,7 +10,7 @@
           Return null if there are no even-occurance items.
    NOTES: 
    CHANGE-LOG:
-   --version 0.0.1 2018-09-15
+   --version 1.0.0 2018-09-15
      + Initial commit
    ============================================================
  */
@@ -26,7 +26,7 @@ const evenOccurrences = ({arr}) => {
     }
     return acc;
   },{a:[], b:new Set(), c:[]});
-  return arr[ans.c.findIndex(x => !(x%2))];
+  return arr[ans.c.findIndex(x => !(x%2))] || null;
 }
 
 module.exports = evenOccurrences;
