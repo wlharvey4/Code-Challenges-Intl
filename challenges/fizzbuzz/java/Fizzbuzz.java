@@ -2,8 +2,8 @@
    challenges/fizzbuzz/java/Fizzbuzz.java
    ==================================================
    CREATED: 2018-09-11
-   UPDATED: 2018-09-13
-   VERSION: 0.1.4
+   UPDATED: 2018-09-14
+   VERSION: 0.1.5
    USAGE: java Fizzbuzz <# #>
    AUTHOR: wlharvey4
    ABOUT: Fizzbuzz implemented in Java
@@ -45,6 +45,8 @@
        the JSON data structure
    --version 0.1.4 2018-09-13
      + Refactored to use interface F with eq() using double dispatch
+   --version 0.1.5 2018-09-14
+     + Refactored all `eq()' methods to `equals'
    ==================================================
  */
 
@@ -88,8 +90,8 @@ public class Fizzbuzz {
 	return this.fizzbuzz().toString();
     }
 
-    public boolean eq(Fizzbuzz that) {
-        return this.fizzbuzz().eq(that.fizzbuzz());
+    public boolean equals(Fizzbuzz that) {
+	return this.fizzbuzz() == that.fizzbuzz();
     }
 
 
@@ -104,9 +106,9 @@ public class Fizzbuzz {
     /* the F interface ties the subclasses together through their
        equality attributes; an F can hold an enum or an integer */
     private interface F {
-	boolean eq(F f);
-	boolean eq(FFB f);
-	boolean eq(FNum f);
+	boolean equals(F f);
+	boolean equals(FFB f);
+	boolean equals(FNum f);
     }
     
     /* subclass that holds an enum */
@@ -125,17 +127,17 @@ public class Fizzbuzz {
 	   but `that's type is unknown, so let `that' dispatch itself, carrying
 	   `this' FFB with it as an argument.  `this' will pick the correct
 	   overloaded method to use; the same thing happens in FNum */
-	public boolean eq(F that) {
-	    return that.eq(this);
+	public boolean equals(F that) {
+	    return that.equals(this);
 	}
 
 	/* Enums have their own equality method built-in */
-	public boolean eq(FFB that) {
+	public boolean equals(FFB that) {
 	    return this.fb() == that.fb();
 	}
 
 	/* an FFB cannot be equal to an FNum */
-	public boolean eq(FNum that) {
+	public boolean equals(FNum that) {
 	    return false;
 	}
 
@@ -156,15 +158,15 @@ public class Fizzbuzz {
 	    return this.num;
 	}
 
-	public boolean eq(F that) {
-	    return that.eq(this);
+	public boolean equals(F that) {
+	    return that.equals(this);
 	}
 
-	public boolean eq(FFB that) {
+	public boolean equals(FFB that) {
 	    return false;
 	}
 
-	public boolean eq(FNum that) {
+	public boolean equals(FNum that) {
 	    return this.num() == that.num();
 	}
 
@@ -185,6 +187,6 @@ public class Fizzbuzz {
 
 	System.out.println("Result   (" + result + ")");
 	System.out.println("Expected (" + expected + ")");
-	System.out.println(fb1.eq(fb2));
+	System.out.println(fb1.equals(fb2));
     }
 }
