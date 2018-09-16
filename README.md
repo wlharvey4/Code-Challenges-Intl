@@ -79,5 +79,10 @@ program `check` will report failed tests, and final statistics for
 every language.
 
 ## Interesting Articles
-Learn Every Language
-https://blog.bradfieldcs.com/in-2017-learn-every-language-59b11f68eee
+* [Learn Every Language](https://blog.bradfieldcs.com/in-2017-learn-every-language-59b11f68eee)
+
+* [Why logic puzzles make good interview questions](https://imranontech.com/2007/01/10/why-logic-puzzles-make-good-interview-questions/)
+
+## Resources
+* [Programming Interviews Exposed: Secrets to Landing Your Next Job
+  by by John Mongan (Author), Noah Kindler (Author)](https://www.amazon.com/Programming-Interviews-Exposed-Secrets-Landing/dp/0471383562)
