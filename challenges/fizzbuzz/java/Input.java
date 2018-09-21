@@ -15,6 +15,8 @@
    --------------------------------------------------
  */
 
+package challenges.fizzbuzz.java;
+
 public class Input {
     private int n;
 

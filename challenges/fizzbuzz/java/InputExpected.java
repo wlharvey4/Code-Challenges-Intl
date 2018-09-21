@@ -15,6 +15,8 @@
    --------------------------------------------------
  */
 
+package challenges.fizzbuzz.java;
+
 public class InputExpected {
     private Input input;
     private Expected expected;

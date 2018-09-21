@@ -2,8 +2,8 @@
    languages/java/Check.java
    ====================================================
    CREATED: 2018-07-06
-   UPDATED: 2018-09-19
-   VERSION: v0.0.3
+   UPDATED: 2018-09-20
+   VERSION: v0.0.4
    AUTHOR:  wlharvey4
    ABOUT:   Main check file for Java code challenge
    	    implementations
@@ -25,10 +25,18 @@
    v0.0.3 2018-09-20T17:38
    - refactored variables to find the correct directories
      and files
+   ....................................................
+   v0.0.4 2018-09-20T22:20
+   - Added try-with-resources BufferedReader to read the
+     JSON data file; need to use reflection to obtain 
+     dynamic access to the JSON file depending on which
+     code challenge is selected on the command line;
    ----------------------------------------------------
  */
 
-import java.io.File;
+package languages.java;
+
+import java.io.*;
 import com.google.gson.*;
 
 class Check {
@@ -56,5 +64,13 @@ class Check {
 	System.out.println("Check: testing code challenge `" + cc + "' from " + ccDir);
 	System.out.println("JSON file: " + ccJSON);
 
+	try (BufferedReader brJSON = new BufferedReader (new FileReader(ccJSON)) ) {
+	    System.out.println("Successfully opened " + ccJSON);
+	    challenges.fizzbuzz.java.Input in = new challenges.fizzbuzz.java.Input(1);
+	}
+
+	catch (IOException e) {
+	    System.err.println("Error Opening JSON file: " + ccJSON + " With " + e);
+	}
     }
 }

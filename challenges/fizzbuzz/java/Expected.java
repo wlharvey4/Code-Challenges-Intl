@@ -15,6 +15,8 @@
    --------------------------------------------------
  */
 
+package challenges.fizzbuzz.java;
+
 public class Expected {
     private Fizzbuzz expected;
 

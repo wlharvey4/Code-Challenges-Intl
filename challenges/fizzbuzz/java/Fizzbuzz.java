@@ -50,6 +50,8 @@
    ==================================================
  */
 
+package challenges.fizzbuzz.java;
+
 public class Fizzbuzz {
 
     private int n;	// the input number

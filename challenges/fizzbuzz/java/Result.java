@@ -15,6 +15,8 @@
    --------------------------------------------------
  */
 
+package challenges.fizzbuzz.java;
+
 public class Result {
     private Fizzbuzz result;
 
