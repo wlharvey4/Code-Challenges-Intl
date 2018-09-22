@@ -2,8 +2,8 @@
    languages/java/Check.java
    ====================================================
    CREATED: 2018-07-06
-   UPDATED: 2018-09-20
-   VERSION: v0.0.5
+   UPDATED: 2018-09-22
+   VERSION: v0.0.6
    AUTHOR:  wlharvey4
    ABOUT:   Main check file for Java code challenge
    	    implementations
@@ -35,6 +35,9 @@
    ....................................................
    v0.0.5 2018-09-22T09:45
    - Made Check class public; updated CLASSPATH; added USAGE
+   ....................................................
+   v0.0.6 2018-09-22T11:30
+   - refactored to use ccJSONDir instead of ccDir
    ----------------------------------------------------
  */
 
@@ -52,7 +55,7 @@ public class Check {
 	String cc;		// name of code challenge input by user
 	File rootDir;		// root of module `Code-Challenges-Intl';
 	File challDir;		// Code-Challenges-Intl/challenges directory
-	File ccDir;		// Code-Challenges-Intl/challenges/<cc> (where JSON file is)
+	File ccJSONDir;		// Code-Challenges-Intl/challenges/<cc> (where JSON file is)
 	File ccJSON;		// code challenge JSON file
 
 	if (args.length != 1) {
@@ -61,11 +64,11 @@ public class Check {
 	}
 
 	cc = args[0];
-	rootDir  = new File("../../");
-	challDir = new File(rootDir.getCanonicalPath(), CHALLENGES);
-	ccDir    = new File(challDir, cc);
-	ccJSON   = new File(ccDir, cc + ".json");
-	System.out.println("Check: testing code challenge `" + cc + "' from " + ccDir);
+	rootDir   = new File("../../");
+	challDir  = new File(rootDir.getCanonicalPath(), CHALLENGES);
+	ccJSONDir = new File(challDir, cc);
+	ccJSON    = new File(ccJSONDir, cc + ".json");
+	System.out.println("Check: testing code challenge `" + cc + "' from " + ccJSONDir);
 	System.out.println("JSON file: " + ccJSON);
 
 	try (BufferedReader brJSON = new BufferedReader (new FileReader(ccJSON)) ) {
