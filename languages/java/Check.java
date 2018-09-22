@@ -3,17 +3,18 @@
    ====================================================
    CREATED: 2018-07-06
    UPDATED: 2018-09-20
-   VERSION: v0.0.4
+   VERSION: v0.0.5
    AUTHOR:  wlharvey4
    ABOUT:   Main check file for Java code challenge
    	    implementations
+   CLASSPATH='.:/usr/local/gson-2.8.5/gson.jar:/usr/local/<...path-to>/Code-Challenges-Intl'
+   USAGE:   java -classpath /usr/local/<...path-to>/Code-Challenges-Intl languages.java.Check <cc>
    NOTES:   Using Goole's gson: A Java serialization/deserialization
 	    library to convert Java Objects into JSON and back
 	    https://www.javadoc.io/doc/com.google.code.gson/gson/2.8.5
 	    https://github.com/google/gson
 	    https://github.com/google/gson/blob/master/UserGuide.md
 	    https://mvnrepository.com/artifact/com.google.code.gson/gson
-   CLASSPATH='.:/usr/local/gson-2.8.5/gson.jar:/usr/local/dev/programming/Code-Challenges-Intl'
    CHANGE-LOG:
    ....................................................
    v0.0.1 2018-07-06T16:00:00
@@ -31,6 +32,9 @@
      JSON data file; need to use reflection to obtain 
      dynamic access to the JSON file depending on which
      code challenge is selected on the command line;
+   ....................................................
+   v0.0.5 2018-09-22T09:45
+   - Made Check class public; updated CLASSPATH; added USAGE
    ----------------------------------------------------
  */
 
@@ -39,7 +43,7 @@ package languages.java;
 import java.io.*;
 import com.google.gson.*;
 
-class Check {
+public class Check {
 
     public static void main(String[] args) throws Exception {
 
