@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-07-06
    UPDATED: 2018-09-22
-   VERSION: v0.0.6
+   VERSION: v0.0.7
    AUTHOR:  wlharvey4
    ABOUT:   Main check file for Java code challenge
    	    implementations
@@ -38,6 +38,9 @@
    ....................................................
    v0.0.6 2018-09-22T11:30
    - refactored to use ccJSONDir instead of ccDir
+   ....................................................
+   v0.0.7 2018-09-22T12:07
+   - successfully loaded class Input using Class.forName(String)
    ----------------------------------------------------
  */
 
@@ -51,12 +54,17 @@ public class Check {
     public static void main(String[] args) throws Exception {
 
 	String CHALLENGES = "challenges";
+	String JAVA = "java";
+	String JSON = "json";
 
 	String cc;		// name of code challenge input by user
+	String ccPackage;	// name of code challenge package
+
 	File rootDir;		// root of module `Code-Challenges-Intl';
 	File challDir;		// Code-Challenges-Intl/challenges directory
 	File ccJSONDir;		// Code-Challenges-Intl/challenges/<cc> (where JSON file is)
 	File ccJSON;		// code challenge JSON file
+	File ccDir;		// Code-Challenges-Intl/challenges/<cc>/<cc>/java/
 
 	if (args.length != 1) {
 	    System.err.println("Usage: check <code-challenge>");
@@ -64,16 +72,24 @@ public class Check {
 	}
 
 	cc = args[0];
+	ccPackage = CHALLENGES + "." + cc + "." + JAVA + ".";
+
 	rootDir   = new File("../../");
 	challDir  = new File(rootDir.getCanonicalPath(), CHALLENGES);
 	ccJSONDir = new File(challDir, cc);
-	ccJSON    = new File(ccJSONDir, cc + ".json");
+	ccDir     = new File(ccJSONDir, JAVA);
+	ccJSON    = new File(ccJSONDir, cc + "." + JSON);
+
 	System.out.println("Check: testing code challenge `" + cc + "' from " + ccJSONDir);
 	System.out.println("JSON file: " + ccJSON);
+	System.out.println("ccDir: " + ccDir);
+	System.out.println("ccPackage: " + ccPackage);
 
 	try (BufferedReader brJSON = new BufferedReader (new FileReader(ccJSON)) ) {
 	    System.out.println("Successfully opened " + ccJSON);
-	    challenges.fizzbuzz.java.Input in = new challenges.fizzbuzz.java.Input(1);
+	    Class<?> Input = Class.forName(ccPackage + "Input");
+	    System.out.println("The class name of Input is " + Input.getName());
+	    // challenges.fizzbuzz.java.Input in = new challenges.fizzbuzz.java.Input(1);
 	}
 
 	catch (IOException e) {
