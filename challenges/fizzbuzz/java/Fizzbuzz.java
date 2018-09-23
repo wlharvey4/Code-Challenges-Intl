@@ -1,9 +1,10 @@
 /**
    challenges/fizzbuzz/java/Fizzbuzz.java
-   ==================================================
+   ========================================================================
    CREATED: 2018-09-11
-   UPDATED: 2018-09-14
-   VERSION: 0.1.5
+   UPDATED: 2018-09-22
+   VERSION: 0.1.6
+   CLASSPATH: /usr/local/<path-to->/Code-Challenges-Intl/
    USAGE: java Fizzbuzz <# #>
    AUTHOR: wlharvey4
    ABOUT: Fizzbuzz implemented in Java
@@ -47,12 +48,16 @@
      + Refactored to use interface F with eq() using double dispatch
    --version 0.1.5 2018-09-14
      + Refactored all `eq()' methods to `equals'
-   ==================================================
+   --version 0.1.6 2018-09-22
+     + imported languages.java.*, where the interfaces are located
+     + implemented CCI_CC, the interface for code challenges
+   ========================================================================
  */
 
 package challenges.fizzbuzz.java;
+import languages.java.*;
 
-public class Fizzbuzz {
+public class Fizzbuzz implements CCI_CC {
 
     private int n;	// the input number
     private F fizzbuzz;	// the calculated Fizzbuzz output
@@ -96,7 +101,10 @@ public class Fizzbuzz {
 	return this.fizzbuzz() == that.fizzbuzz();
     }
 
-
+    public CCI_Result cc(CCI_Input i) {
+	CCI_Result r = new Result(this);
+	return r;
+    }
 
     
     /* INTERNAL IMPLEMENTATION DETAILS */

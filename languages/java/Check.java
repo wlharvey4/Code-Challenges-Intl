@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-07-06
    UPDATED: 2018-09-22
-   VERSION: v0.0.7
+   VERSION: v0.0.8
    AUTHOR:  wlharvey4
    ABOUT:   Main check file for Java code challenge
    	    implementations
@@ -41,12 +41,16 @@
    ....................................................
    v0.0.7 2018-09-22T12:07
    - successfully loaded class Input using Class.forName(String)
+   ....................................................
+   v0.0.8 2018-09-22T19:45
+   - successfully loaded class CCI_CC using name ccPackage.<cc>
    ----------------------------------------------------
  */
 
 package languages.java;
 
 import java.io.*;
+import java.lang.reflect.*;
 import com.google.gson.*;
 
 public class Check {
@@ -58,6 +62,7 @@ public class Check {
 	String JSON = "json";
 
 	String cc;		// name of code challenge input by user
+	String ccName;	        // capitalized code challenge name
 	String ccPackage;	// name of code challenge package
 
 	File rootDir;		// root of module `Code-Challenges-Intl';
@@ -72,6 +77,7 @@ public class Check {
 	}
 
 	cc = args[0];
+	ccName = cc.substring(0,1).toUpperCase() + cc.substring(1);
 	ccPackage = CHALLENGES + "." + cc + "." + JAVA + ".";
 
 	rootDir   = new File("../../");
@@ -80,20 +86,27 @@ public class Check {
 	ccDir     = new File(ccJSONDir, JAVA);
 	ccJSON    = new File(ccJSONDir, cc + "." + JSON);
 
-	System.out.println("Check: testing code challenge `" + cc + "' from " + ccJSONDir);
-	System.out.println("JSON file: " + ccJSON);
+	System.out.println("Check: testing code challenge `" + ccPackage + ccName);
+	System.out.println("JSON is: " + ccJSON);
 	System.out.println("ccDir: " + ccDir);
-	System.out.println("ccPackage: " + ccPackage);
+	System.out.println();
 
 	try (BufferedReader brJSON = new BufferedReader (new FileReader(ccJSON)) ) {
 	    System.out.println("Successfully opened " + ccJSON);
+
+	    Class<?> CC = Class.forName(ccPackage + ccName);
 	    Class<?> Input = Class.forName(ccPackage + "Input");
+	    Constructor ccConst = CC.getConstructor(Input);
+	    System.out.println("CC constructor is: " + ccConst);
 	    System.out.println("The class name of Input is " + Input.getName());
-	    // challenges.fizzbuzz.java.Input in = new challenges.fizzbuzz.java.Input(1);
 	}
 
-	catch (IOException e) {
-	    System.err.println("Error Opening JSON file: " + ccJSON + " With " + e);
+	catch (IOException ioe) {
+	    System.err.println("Error Opening JSON file: " + ccJSON + " With " + ioe);
+	}
+
+	catch (Exception e) {
+	    System.err.println("Error: " + e);
 	}
     }
 }

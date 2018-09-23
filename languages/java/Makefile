@@ -15,12 +15,13 @@
 # 2018-09-22T10:06 VERSION 0.1.0
 # - split CLASSPATH into two; one for GSON, and one for CCI; reformatted
 # ...........................................................................
-# 2018-09-22T10:36 VERSION 0.1.1
-# - 
+# 2018-09-22T19:24 VERSION 0.1.1
+# - compile CCI_*.java (i.e., CCI_CC, CCI_Input, CCI_Result)
 # ---------------------------------------------------------------------------
 
 CC	  := check
 JAVAFILE  := Check
+CCI_CC	  := CCI_*
 
 GSONPATH  := /usr/local/gson-2.8.5/gson.jar
 CCIPATH   := /usr/local/dev/programming/Code-Challenges-Intl
@@ -31,7 +32,7 @@ default     : ${CC}
 ${CC}	    : ${JAVAFILE}
 ${JAVAFILE} : ${JAVAFILE}.class
 ${JAVAFILE}.class : ${JAVAFILE}.java
-	javac -classpath ${CLASSPATH} ${JAVAFILE}.java
+	javac -classpath ${CLASSPATH} ${JAVAFILE}.java ${CCI_CC}.java
 
 clean:
 	rm -f *.class *~
