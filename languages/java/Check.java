@@ -2,8 +2,8 @@
    languages/java/Check.java
    ====================================================
    CREATED: 2018-07-06
-   UPDATED: 2018-09-23
-   VERSION: v0.0.10
+   UPDATED: 2018-09-24
+   VERSION: v0.0.11
    AUTHOR:  wlharvey4
    ABOUT:   Main check file for Java code challenge
    	    implementations
@@ -51,6 +51,10 @@
    ....................................................
    v0.0.10 2018-09-23T23:40
    - successfully compiled, loaded json data, and ran without error
+   ....................................................
+   v0.0.11 2018-09-24T11:50
+   - created CCI_InputExpected.java data structure that will load
+     JSON data and print it out;
    ----------------------------------------------------
  */
 
@@ -110,6 +114,10 @@ public class Check {
 	    Constructor ccConst = CC.getConstructor(Input);
 	    System.out.println("CC constructor is: " + ccConst);
 	    System.out.println("The class name of Input is " + Input.getName());
+
+	    for (CCI_InputExpected ie : inputExpected) {
+		System.out.println(ie);
+	    }
 	}
 
 	catch (IOException ioe) {
