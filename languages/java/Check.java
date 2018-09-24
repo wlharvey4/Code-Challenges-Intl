@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-07-06
    UPDATED: 2018-09-23
-   VERSION: v0.0.9
+   VERSION: v0.0.10
    AUTHOR:  wlharvey4
    ABOUT:   Main check file for Java code challenge
    	    implementations
@@ -48,6 +48,9 @@
    v0.0.9 2018-09-23T23:00
    - successfully compiled and loaded Gson; unsuccessfully
      filled json data;
+   ....................................................
+   v0.0.10 2018-09-23T23:40
+   - successfully compiled, loaded json data, and ran without error
    ----------------------------------------------------
  */
 
@@ -100,7 +103,7 @@ public class Check {
 	try (BufferedReader brJSON = new BufferedReader (new FileReader(ccJSON)) ) {
 	    System.out.println("Successfully opened " + ccJSON);
 
-	    CCI_InputExpected inputExpected = gson.fromJson(brJSON, CCI_InputExpected.class);
+	    CCI_InputExpected[] inputExpected = gson.fromJson(brJSON, CCI_InputExpected[].class);
 
 	    Class<?> CC = Class.forName(ccPackage + ccName);
 	    Class<?> Input = Class.forName(ccPackage + "Input");
