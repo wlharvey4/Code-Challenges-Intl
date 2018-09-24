@@ -2,8 +2,8 @@
    languages/java/Check.java
    ====================================================
    CREATED: 2018-07-06
-   UPDATED: 2018-09-22
-   VERSION: v0.0.8
+   UPDATED: 2018-09-23
+   VERSION: v0.0.9
    AUTHOR:  wlharvey4
    ABOUT:   Main check file for Java code challenge
    	    implementations
@@ -44,6 +44,10 @@
    ....................................................
    v0.0.8 2018-09-22T19:45
    - successfully loaded class CCI_CC using name ccPackage.<cc>
+   ....................................................
+   v0.0.9 2018-09-23T23:00
+   - successfully compiled and loaded Gson; unsuccessfully
+     filled json data;
    ----------------------------------------------------
  */
 
@@ -86,6 +90,8 @@ public class Check {
 	ccDir     = new File(ccJSONDir, JAVA);
 	ccJSON    = new File(ccJSONDir, cc + "." + JSON);
 
+	Gson gson = new Gson();
+
 	System.out.println("Check: testing code challenge `" + ccPackage + ccName);
 	System.out.println("JSON is: " + ccJSON);
 	System.out.println("ccDir: " + ccDir);
@@ -93,6 +99,8 @@ public class Check {
 
 	try (BufferedReader brJSON = new BufferedReader (new FileReader(ccJSON)) ) {
 	    System.out.println("Successfully opened " + ccJSON);
+
+	    CCI_InputExpected inputExpected = gson.fromJson(brJSON, CCI_InputExpected.class);
 
 	    Class<?> CC = Class.forName(ccPackage + ccName);
 	    Class<?> Input = Class.forName(ccPackage + "Input");

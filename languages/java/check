@@ -1,1 +1,1 @@
-java -classpath /usr/local/dev/programming/Code-Challenges-Intl/ languages.java.Check $@
+java -classpath /usr/local/gson-2.8.5/gson.jar:/usr/local/dev/programming/Code-Challenges-Intl/ languages.java.Check $@
