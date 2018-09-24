@@ -3,7 +3,7 @@
    =========================================================================
    CREATED: 2018-09-23
    UPDATED: 2018-09-24
-   VERSION: 0.0.3
+   VERSION: 0.0.4
    AUTHOR:  wlharvey4
    ABOUT:   Interface for Input_Expected.java, which converts JSON into Java
    	    objects
@@ -20,31 +20,18 @@
    2018-09-24T10:30 Version 0.0.3
    - experimenting with data structure that can load JSON from Gson; this code
      compiles and runs properly;
+   .........................................................................
+   2018-09-24T12:15 Version 0.0.4
+   - refactored into an interface with two required getters and a required inner
+     static class to hold the parameters;
    -------------------------------------------------------------------------
  */
 
 package languages.java;
 
-public class CCI_InputExpected {
+public interface CCI_InputExpected {
+    public CCI_Params getParams();
+    public String getExpected();
 
-    Params params;
-    String expected;
-
-    CCI_InputExpected() {}
-
-    public String toString() {
-	return "CCI_InputExpected:\n\tParams: " + this.params + "\n\tExpected: " + this.expected;
-    }
-
-    static class Params {
-	int n;
-
-	Params() {}
-	Params(int n) {
-	    this.n = n;
-	}
-	public String toString() {
-	    return "n: " + this.n;
-	}
-    }
+    static abstract class CCI_Params {}
 }

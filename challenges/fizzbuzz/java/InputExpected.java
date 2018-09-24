@@ -2,8 +2,8 @@
    challenges/fizzbuzz/java/InputExpected.java
    =================================================
    CREATED: 2018-09-12
-   UPDATED: 2018-09-23
-   VERSION: 0.0.3
+   UPDATED: 2018-09-24
+   VERSION: 0.0.4
    AUTHOR: wlharvey4
    ABOUT: Utility class for Fizzbuzz.java; holds the 
           input parameter and expected output from the
@@ -19,7 +19,12 @@
        Gson
    .................................................
    --version 0.0.3 2018-09-23
-     + factored interface into class CCI_InputExpected
+     + factored interface into class CCI_InputExpecteds
+   .................................................
+   --version 0.0.4 2018-09-24
+     + factored CCI_InputExpected and InputExpected to
+       successfully read in JSON into an array of InputExpected
+       objects and print them out.
    -------------------------------------------------
  */
 
@@ -27,29 +32,40 @@ package challenges.fizzbuzz.java;
 import com.google.gson.*;
 import languages.java.*;
 
-public class InputExpected extends CCI_InputExpected {
-    private Gson ccJson;
-    private Gson gson_input;
-    private Gson gson_expected;
+public class InputExpected implements CCI_InputExpected {
 
-    private Input input;
-    private Expected expected;
+    private Params params;
+    private String expected;
 
-    public InputExpected(Gson ccJson) {
-	this.ccJson = ccJson;
+    public InputExpected() {}
+
+    public Params getParams() {
+	return this.params;
     }
 
-    public Input input() {
-	return this.input;
+    public String getExpected() {
+	return "Expected: " + this.expected;
     }
 
-    public Expected expected() {
-	return this.expected;
+    public String toString() {
+	return "InputExpected:\n\tParams: " + this.params + "\n\tExpected: " + this.expected;
     }
 
-    class Params {
-    }
+    static class Params extends CCI_InputExpected.CCI_Params {
+	private int n;
 
-    class Expected {
+	public Params() {}
+
+	public Params(int n) {
+	    this.n = n;
+	}
+	
+	int getN() {
+	    return this.n;
+	}
+
+	public String toString() {
+	    return "n: " + this.n;
+	}
     }
 }

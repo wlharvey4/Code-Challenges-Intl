@@ -3,7 +3,7 @@
    ====================================================
    CREATED: 2018-07-06
    UPDATED: 2018-09-24
-   VERSION: v0.0.11
+   VERSION: v0.0.12
    AUTHOR:  wlharvey4
    ABOUT:   Main check file for Java code challenge
    	    implementations
@@ -55,6 +55,12 @@
    v0.0.11 2018-09-24T11:50
    - created CCI_InputExpected.java data structure that will load
      JSON data and print it out;
+   ....................................................
+   v0.0.12 2018-09-24T12:15
+   - after creating CCI_InputExpected interface and implementing
+     it in InputExpected, successfully loaded all JSON data
+     into an array of InputExpected's, but used hard-coded
+     Type instead of calculated type
    ----------------------------------------------------
  */
 
@@ -107,7 +113,7 @@ public class Check {
 	try (BufferedReader brJSON = new BufferedReader (new FileReader(ccJSON)) ) {
 	    System.out.println("Successfully opened " + ccJSON);
 
-	    CCI_InputExpected[] inputExpected = gson.fromJson(brJSON, CCI_InputExpected[].class);
+	    CCI_InputExpected[] inputExpected = gson.fromJson(brJSON, challenges.fizzbuzz.java.InputExpected[].class);
 
 	    Class<?> CC = Class.forName(ccPackage + ccName);
 	    Class<?> Input = Class.forName(ccPackage + "Input");
