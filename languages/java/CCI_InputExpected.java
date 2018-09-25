@@ -30,8 +30,9 @@
 package languages.java;
 
 public interface CCI_InputExpected {
+
     public CCI_Params getParams();
     public String getExpected();
 
-    static abstract class CCI_Params {}
+    static class CCI_Params {}
 }

@@ -2,8 +2,8 @@
    challenges/fizzbuzz/java/InputExpected.java
    =================================================
    CREATED: 2018-09-12
-   UPDATED: 2018-09-24
-   VERSION: 0.0.4
+   UPDATED: 2018-09-25
+   VERSION: 0.0.5
    AUTHOR: wlharvey4
    ABOUT: Utility class for Fizzbuzz.java; holds the 
           input parameter and expected output from the
@@ -25,6 +25,10 @@
      + factored CCI_InputExpected and InputExpected to
        successfully read in JSON into an array of InputExpected
        objects and print them out.
+   .................................................
+   --version 0.0.5 2018-09-25
+     + added a constructor with two parameters; make inner
+       class private;
    -------------------------------------------------
  */
 
@@ -38,6 +42,10 @@ public class InputExpected implements CCI_InputExpected {
     private String expected;
 
     public InputExpected() {}
+    public InputExpected(int n, String s) {
+	params = new InputExpected.Params(n);
+	expected = s;
+    }
 
     public Params getParams() {
 	return this.params;
@@ -51,7 +59,7 @@ public class InputExpected implements CCI_InputExpected {
 	return "InputExpected:\n\tParams: " + this.params + "\n\tExpected: " + this.expected;
     }
 
-    static class Params extends CCI_InputExpected.CCI_Params {
+    private static class Params extends CCI_InputExpected.CCI_Params {
 	private int n;
 
 	public Params() {}

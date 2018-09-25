@@ -67,8 +67,9 @@
 package languages.java;
 
 import java.io.*;
-import java.lang.reflect.*;
+
 import com.google.gson.*;
+import com.google.gson.reflect.*;
 
 public class Check {
 
@@ -113,7 +114,14 @@ public class Check {
 	try (BufferedReader brJSON = new BufferedReader (new FileReader(ccJSON)) ) {
 	    System.out.println("Successfully opened " + ccJSON);
 
-	    CCI_InputExpected[] inputExpected = gson.fromJson(brJSON, challenges.fizzbuzz.java.InputExpected[].class);
+	    Class<?> IE = Class.forName(ccPackage + "InputExpected");
+
+	    Constructor<?> iec = IE.getConstructor(int.class, String.class);
+	    CCI_InputExpected ieo = (CCI_InputExpected)iec.newInstance(1, "2");
+	    System.out.println("IEO: " + ieo); // WORKS
+
+	    // CCI_InputExpected[] inputExpected = gson.fromJson(brJSON, IE[].class); // DOES NOT WORK
+	    CCI_InputExpected[] inputExpected = gson.fromJson(brJSON, challenges.fizzbuzz.java.InputExpected[].class); // WORKS
 
 	    Class<?> CC = Class.forName(ccPackage + ccName);
 	    Class<?> Input = Class.forName(ccPackage + "Input");
@@ -122,7 +130,7 @@ public class Check {
 	    System.out.println("The class name of Input is " + Input.getName());
 
 	    for (CCI_InputExpected ie : inputExpected) {
-		System.out.println(ie);
+	    	System.out.println(ie);
 	    }
 	}
 
