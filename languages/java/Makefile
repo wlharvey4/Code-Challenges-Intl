@@ -1,12 +1,17 @@
 # languages/java/Makefile
 # #########################################################################
 # CREATED: 2018-09-26
-# UPDATED: 2018-10-01
-# VERSION: 1.0.0
+# UPDATED: 2018-10-02T12:05
+# VERSION: 1.0.1
 # AUTHOR:  wlharvey4
 # ABOUT:   makefile for Code-Challenges-Intl/languages/java program
 # USAGE:   make TARGET | make run CC=<CODE-CHALLENGE>
-# NOTES:
+# NOTES:   This version of make relies upon Bash ver. 4, and also upon
+#	   Bash being in /opt/local/bin; the location of Bash should
+#	   obviously be set by the user in a SHELL variable, but the version
+#	   relies upon a Bash ver.4 function, ${var^} to up-case the Code
+#	   Challenge name; I should prepare a function to handle this should
+#	   ver. 4 not be available.
 # CHANGE-LOG
 # .........................................................................
 # 2018-09-26 version 0.1.0
@@ -40,17 +45,26 @@
 # 2018-10-01T18:30 version 1.0.0
 # - moved code into Code-Challenges-Intl/languages/java and adjusted it
 #   to work; code runs successfully;
+# .........................................................................
+# 2018-10-02T12:05 version 1.0.1
+# - refactored to use variables $cc and $CC for lower case Code Challenge
+#   and upper case Code Challenge instead of hard-coded Code Challenge name;
+#   use a Bash ver.4 function ${var^} to up-case Code Challenge name;
 # -------------------------------------------------------------------------
 
+SHELL = /opt/local/bin/bash
+
 MAIN := Main
+cc ?= fizzbuzz
+CC = $(shell cc=$(cc); echo $${cc^};)
+
 CLASSPATH   := .:../../:gson-2.8.5.jar
-PACKAGECC   := ../../challenges/fizzbuzz/java
+PACKAGECC   := ../../challenges/$(cc)/java
 PACKAGEMAIN := ../../languages/java
-CC ?= fizzbuzz
 
-.PHONY : default main Main IParams IExpected IResult ICC Params Result fizzbuzz Fizzbuzz FB clean run
+.PHONY : default main Main IParams IExpected IResult ICC Params Result $(cc) $(CC) FB clean run
 
-default : Main ParamsExpected IParams IExpected IResult ICC Params Result Expected Fizzbuzz
+default : Main ParamsExpected IParams IExpected IResult ICC Params Result Expected $(cc) $(CC)
 
 main : Check
 Main : $(PACKAGEMAIN)/Check.class
@@ -98,11 +112,11 @@ Expected : $(PACKAGECC)/Expected.class
 $(PACKAGECC)/Expected.class : $(PACKAGECC)/Expected.java
 	javac -classpath $(CLASSPATH) $(PACKAGECC)/Expected.java
 
-fizzbuzz: Fizzbuzz
-Fizzbuzz : $(PACKAGECC)/Fizzbuzz.class
+$(cc): $(CC)
+$(CC) : $(PACKAGECC)/$(CC).class
 
-$(PACKAGECC)/Fizzbuzz.class : $(PACKAGECC)/Fizzbuzz.java $(PACKAGECC)/Result.class
-	javac -classpath $(CLASSPATH) $(PACKAGECC)/Fizzbuzz.java
+$(PACKAGECC)/$(CC).class : $(PACKAGECC)/$(CC).java $(PACKAGECC)/Params.class $(PACKAGECC)/Result.class
+	javac -classpath $(CLASSPATH) $(PACKAGECC)/$(CC).java
 
 FB : $(PACKAGECC)/FB.class
 
@@ -113,4 +127,4 @@ clean :
 	rm -rfv *~ $(PACKAGEMAIN)/*{.class,~} $(PACKAGECC)/*{.class,~}
 
 run : default
-	@java -classpath $(CLASSPATH) languages/java/Check $(CC)
+	@java -classpath $(CLASSPATH) languages/java/Check $(cc)

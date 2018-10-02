@@ -1,1 +1,54 @@
-make run CC=$1
+#! /usr/bin/env bash
+
+# language/java/check
+# CREATED: 2018-10-01
+# UPDATED: 2018-10-02
+# VERSION: 1.0.1
+# AUTHOR:  wlharvey4
+# ABOUT:   check is a shell program to take user input and run Makefile
+# NOTES:
+# CHANGE-LOG:
+# .........................................................................
+# 2018-10-02T13:25 version 1.0.1
+# - implemented Bash version check, USAGE message, switch statement;
+# - need to implement init function
+# -------------------------------------------------------------------------
+
+bash --version | grep --quiet 'version 4\.' || {
+  echo This program depends upon Bash version 4.
+  echo you are running $(sh --version)
+  exit
+}
+
+USAGE() {
+cat << END
+This is Code-Challenges-Intl
+----------------------------
+./check CODE-CHALLENGE          RUN THE CODE CHALLENGE TESTS
+				e.g., ./check fizzbuzz
+./check -h|--help|--usage       HELP MESSAGE
+./check clean CODE-CHALLENGE    CLEAN CLASS FILES
+				e.g. ./check clean fizzbuzz
+./check init NEW-CODE-CHALLENGE INITIALIZE NEW CODE CHALLENGE TEMPLATES
+				e.g. ./check init blah
+END
+}
+
+
+case $1 in
+*help|-h|*usage|*USAGE)
+	USAGE
+	;;
+'clean')
+	[ -z $2 ] && { echo; echo ERROR\! see usage; echo; USAGE; exit; }
+	make clean cc=$2
+	;;
+'init')
+	[ -z $2 ] && { echo; echo ERROR\! see usage; echo; USAGE; exit; }
+	echo TODO!! init cc=$2
+	;;
+*)
+	[ -z $1 ] && { echo; echo ERROR\! see usage; echo; USAGE; exit; }
+	make run SHELL=$(which bash) cc=$1
+	;;
+esac
