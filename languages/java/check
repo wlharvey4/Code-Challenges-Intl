@@ -1,0 +1,1 @@
+make run CC=$1
