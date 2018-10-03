@@ -15,6 +15,10 @@
 # .........................................................................
 # 2018-10-02T17:50 version 1.1.0
 # - implemented init function
+# .........................................................................
+# 2018-10-03T06:15 version 1.2.0
+# - refactored to protected an existing Code Challenge and JSON data file
+#   but add a java/ directory only;
 # -------------------------------------------------------------------------
 
 bash --version | grep --quiet 'version 4\.' || {
@@ -38,15 +42,14 @@ END
 }
 
 INIT() {
-  [ -d ../../challenges/$1 ] && { echo $1 exists; exit; }
-  echo creating challenges/$1...
-  mkdir -vp ../../challenges/${1,}/
-  echo
+  [ -d ../../challenges/${1,}/java ] && { echo ${1,} exists; exit; }
+  echo creating challenges/$1/java...
   echo moving templates into challenges/${1,}/java...
-  cp -rv templates/challenges/cc/ ../../challenges/${1,}/
+  [ -e ../../challenges/${1,}/${1,}.json ] || cp -v templates/challenges/cc/cc.json ../../challenges/${1,}/${1,}.json
+  cp -nrv templates/challenges/cc/java ../../challenges/${1,}/
   echo
   echo updating template names...
-  find ../../challenges -name cc.json -execdir mv -v {} ${1,}.json \; -or -name CC.java -execdir mv -v {} ${1^}.java \;
+  find ../../challenges -name CC.java -execdir mv -v {} ${1^}.java \;
   echo
   echo updating template internals for:
   ( cd ../../
