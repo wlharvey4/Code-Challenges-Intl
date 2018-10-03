@@ -1,4 +1,4 @@
-/* challenge/<cc>/java/<CC>.java
+/* challenges/<cc>/java/<CC>.java
    =========================================================================
    CREATED: <DATE>
    UPDATED: 

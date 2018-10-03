@@ -12,6 +12,9 @@
 # 2018-10-02T13:25 version 1.0.1
 # - implemented Bash version check, USAGE message, switch statement;
 # - need to implement init function
+# .........................................................................
+# 2018-10-02T17:50 version 1.1.0
+# - implemented init function
 # -------------------------------------------------------------------------
 
 bash --version | grep --quiet 'version 4\.' || {
@@ -34,6 +37,33 @@ This is Code-Challenges-Intl
 END
 }
 
+INIT() {
+  [ -d ../../challenges/$1 ] && { echo $1 exists; exit; }
+  echo creating challenges/$1...
+  mkdir -vp ../../challenges/${1,}/
+  echo
+  echo moving templates into challenges/${1,}/java...
+  cp -rv templates/challenges/cc/ ../../challenges/${1,}/
+  echo
+  echo updating template names...
+  find ../../challenges -name cc.json -execdir mv -v {} ${1,}.json \; -or -name CC.java -execdir mv -v {} ${1^}.java \;
+  echo
+  echo updating template internals for:
+  ( cd ../../
+  for file in challenges/$1/java/*.java
+  do
+    echo "...$file"
+    sed -i '' \
+      -e 's/<cc>/'${1,}'/g' \
+      -e 's/<CC>/'${1^}'/g' \
+      -e 's/<DATE>/'$(date "+%Y-%m-%dT%H:%M:00")'/g' \
+      $file
+  done
+  echo
+  echo Successfully completed initializing Code Challenge templates for ${1^}
+  )
+}
+
 
 case $1 in
 *help|-h|*usage|*USAGE)
@@ -41,14 +71,14 @@ case $1 in
 	;;
 'clean')
 	[ -z $2 ] && { echo; echo ERROR\! see usage; echo; USAGE; exit; }
-	make clean cc=$2
+	make clean cc=${2,}
 	;;
 'init')
 	[ -z $2 ] && { echo; echo ERROR\! see usage; echo; USAGE; exit; }
-	echo TODO!! init cc=$2
+	INIT ${2,}
 	;;
 *)
 	[ -z $1 ] && { echo; echo ERROR\! see usage; echo; USAGE; exit; }
-	make run SHELL=$(which bash) cc=$1
+	make run SHELL=$(which bash) cc=${1,}
 	;;
 esac

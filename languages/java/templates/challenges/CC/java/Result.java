@@ -65,7 +65,7 @@ public class Result implements IResult {
     }
 
     /* basic getter */
-    public FizzbuzzResult result() {
+    public <CC>Result result() {
 	return this.result;
     }
 
@@ -96,13 +96,13 @@ public class Result implements IResult {
        its need to have multiple Result types; this will probably not be
        necessary in the common situation.
     */
-    protected interface FizzbuzzResult {
-	public boolean equals(FizzbuzzResult that);
+    protected interface <CC>Result {
+	public boolean equals(<CC>Result that);
 	public boolean equals(FB_Result that);
 	public boolean equals(Int_Result that);
     }
 
-    private class FB_Result implements FizzbuzzResult {
+    private class FB_Result implements <CC>Result {
 	private FB result;
 
 	private FB_Result() {}
@@ -119,7 +119,7 @@ public class Result implements IResult {
 
 
 	// more dispatching methods to continue resolving calls to equals()
-	public boolean equals(FizzbuzzResult that) {
+	public boolean equals(<CC>Result that) {
 	    return that.equals(this);
 	}
 	public boolean equals(FB_Result that) {
@@ -130,7 +130,7 @@ public class Result implements IResult {
 	}
     }
 
-    private class Int_Result implements FizzbuzzResult {
+    private class Int_Result implements <CC>Result {
 	private Integer result;
 
 	private Int_Result() {}
@@ -147,7 +147,7 @@ public class Result implements IResult {
 
 
 	// more dispatching methods to continue resolving calls to equals()
-	public boolean equals(FizzbuzzResult that) {
+	public boolean equals(<CC>Result that) {
 	    return that.equals(this);
 	}
 	public boolean equals(FB_Result that) {
