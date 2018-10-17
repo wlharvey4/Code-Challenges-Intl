@@ -83,6 +83,16 @@ every language.
 
 * [Why logic puzzles make good interview questions](https://imranontech.com/2007/01/10/why-logic-puzzles-make-good-interview-questions/)
 
+* [Dave Thomas Interview: The Corruption of Agile; Ruby and Elixir; Katas and More](http://www.drdobbs.com/architecture-and-design/dave-thomas-interview-the-corruption-of/240166688)
+
+> Katas
+
+> AB: You are the person who invented code katas, small self-contained programming exercises that refine a pattern of behaviors.
+
+> DT: Yes. The initial idea behind the kata was to discuss something I do all the time. I like coding and I like to experiment with code, so typically I'll take some algorithm and try coding it in different ways: different languages, different techniques, or anything that will give me different insights. And as programmers, we rely on tacit knowledge. Alfred North Whitehead said, "Civilization advances by extending the number of important operations which we can perform without thinking of them." And katas are ways of forcing your brain to internalize patterns of experience, to associate stimuli and response.
+
 ## Resources
 * [Programming Interviews Exposed: Secrets to Landing Your Next Job
   by by John Mongan (Author), Noah Kindler (Author)](https://www.amazon.com/Programming-Interviews-Exposed-Secrets-Landing/dp/0471383562)
+
+* [CodeKata](http://codekata.com/)
