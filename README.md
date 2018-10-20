@@ -91,8 +91,42 @@ every language.
 
 > DT: Yes. The initial idea behind the kata was to discuss something I do all the time. I like coding and I like to experiment with code, so typically I'll take some algorithm and try coding it in different ways: different languages, different techniques, or anything that will give me different insights. And as programmers, we rely on tacit knowledge. Alfred North Whitehead said, "Civilization advances by extending the number of important operations which we can perform without thinking of them." And katas are ways of forcing your brain to internalize patterns of experience, to associate stimuli and response.
 
+* [Hacking Passion, by Katrina Owen (creator of _exercism_)](http://www.kytrinyx.com/talks/hacking-passion/)
+
+> Practice is a strange beast.  It's not play.  It's not intended to be fun.  It's also not work.
+  It's not intended to produce anything.  Practice is a thing entirely unto itself....  For
+  practice to be truly effective, it should be focused and deliberate.  The most basic form of
+  practice is the drill.  A good drill boils down to three elements: focus, repetition, and
+  continuous feedback.  A drill takes an activity and warps it until you are focusing on a narrow
+  slice of that skill in a way that is repeatable, and provides immediate and continuous feedback.
+
+> Practice doesn't make perfect, it makes permanent.  So: choose one thing that you can kind of
+  almost do.  Deliberately warp it to focus on a specific aspect of that skill, make it repeatable
+  so you can do it over and over and over, and then make the feedback loop as short as
+  possible.  Then go do it.
+
+> I had come to accept that talent is not boolean.  It's *not* some innate genetic trait that you
+  have to go look for and may or may not find.  The truth is: talent is bullshit.  Skill can be
+  developed systematically.  A SYSTEM is *awesome*.  A system, you can understand.  A system you can
+  HACK.  The technical term for levelling up is called skill acquisition.
+
+> A couple of researchers, a pair of brothers by the name of Dreyfus, created a model of how skill
+  development works. The scale goes like this:
+
+* Novice: where you know nothing
+* Advanced beginner: where you still suck, but you start seeing what this might be about
+* Competent: where you can start getting shit done
+* Proficient: where you get shit done really well
+* Expert: where the shit you get done seems like magic to pretty much everyone else.
+
+> Skill grows by focusing intently on the things that stretch you.  Passion grows by giving
+  something your full attention long enough to gain depth and understand nuances.  Talent is
+  bullshit.  Skill is cultivated.  Passion is curated.
+
 ## Resources
 * [Programming Interviews Exposed: Secrets to Landing Your Next Job
   by by John Mongan (Author), Noah Kindler (Author)](https://www.amazon.com/Programming-Interviews-Exposed-Secrets-Landing/dp/0471383562)
 
 * [CodeKata](http://codekata.com/)
+
+* [Exercism](http://www.kytrinyx.com/exercism/)
