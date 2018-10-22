@@ -12,21 +12,21 @@
 # .............................................................................
 # version 1.0.0 2018-10-22T11:30
 # -- initial commit
+# .............................................................................
+# version 1.1.0 2018-10-22T16:00
+# -- change input to be a hash instead of json
+# -- change symbols to strings for easier equality check
+# -- remove option to compare two values from the command line
 # -----------------------------------------------------------------------------
 
-require "JSON"
-
-# Class Fizzbuzz receives a string of JSON contained in 'input'
-# as described below, and calculates a Fizzbuzz value, which
-# can be observed through either #puts or #inspect.  Two
-# Fizzbuzz values can be compared for equality using #==.
+# Class Fizzbuzz receives a Ruby Hash object as described below, and calculates
+# a Fizzbuzz  value, which can  be observed  through either #puts  or #inspect.
 class Fizzbuzz
   attr_accessor :n, :out
-  # 'input' is a JSON string of the form {"n": <int>}
-  # @n is converted from JSON value into a Fixnum
-  # @out is calculated as one of <int> | :fizz | :buzz | :fizzbuzz
+  # 'input' is a Ruby Hash of the form {"n" => <int>}
+  # @n is obtained from the Hash value as a Fixnum
+  # @out is calculated as one of <int> | "fizz" | "buzz" | "fizzbuzz"
   def initialize input
-    input = JSON.parse input
     @n    = input["n"]
     @out  = calculate @n
   end
@@ -35,16 +35,16 @@ class Fizzbuzz
     fizz = n % 3 == 0
     buzz = n % 5 == 0
     if fizz && buzz
-      @out = :fizzbuzz
+      @out = "fizzbuzz"
     elsif fizz || buzz
-      @out = fizz ? :fizz : :buzz
+      @out = fizz ? "fizz" : "buzz"
     else
       @out = n
     end
   end
 
-  def == other
-      self.out == other.out
+  def == expected
+      self.out == expected
   end
 
   def to_s
@@ -56,10 +56,10 @@ class Fizzbuzz
   end
 end
 
-# Fizzbuzz can be run from the command line as ruby fizzbuzz.rb <int>
-# or ./fizzbuzz <int> if it has been made executable and linked.
+# Fizzbuzz  can be  run from  the  command line  as ruby  fizzbuzz.rb <int>  or
+# ./fizzbuzz <int> if it has been made executable and linked.
 def main n
-  fizzbuzz = Fizzbuzz.new "{\"n\": #{n}}"
+  fizzbuzz = Fizzbuzz.new ({"n" => n.to_i})
   p fizzbuzz
 end
 
