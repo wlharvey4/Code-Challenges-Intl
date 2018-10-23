@@ -3,8 +3,8 @@
 # challenges/languages/ruby/check.rb
 # =============================================================================
 # CREATED: 2018-10-22
-# UPDATED: 2018-10-22
-# VERSION: 0.0.1
+# UPDATED: 2018-10-23
+# VERSION: 0.2.0
 # AUTHOR : wlharvey4
 # ABOUT  : Test runner for CCI Ruby challenges
 # USAGE  : ./check <code-challenge>
@@ -13,12 +13,22 @@
 # .............................................................................
 # version 0.1.0 2018-10-22T16:30
 # -- Initial commit of working version
+# .............................................................................
+# version 0.2.0 2018-10-23T15:55
+# -- String#capitalize capitalized the first character, but downcased the rest;
+#    this will not work with camel-cased code challenge names like strCount;
+#    so, create a new variable from the command-line arg cc (which turned out
+#    to be frozen, and so found that the '+' unary operator created an un-
+#    frozen copy) and capitalize the first character using the #[] method;
 # -----------------------------------------------------------------------------
 
 require "json"
 
 if $0 == __FILE__			   # this code should be run as a script
-  cc = $*[0].downcase			   # code challenge name
+  cc = $*[0]				   # code challenge name
+  ccClass = +cc				   # need a capitlized version of cc
+  ccClass[0] = cc.chr.capitalize	   # to name the code challenge class
+  					   # '+' is needed because cl-arg is frozen
   CCI_DIR = "../../challenges"             # relative code challenge directory
   cc_dir = File.absolute_path(cc, CCI_DIR) # absolute code challenge directory
   unless File.directory?(cc_dir)	   # make sure cc_dir exists
@@ -31,7 +41,7 @@ if $0 == __FILE__			   # this code should be run as a script
 					   # name
   cc_file = File.join(cc_dir, "ruby", cc + ".rb")
   load(cc_file)				   # and then load the code challenge
-  fn = Object.const_get(cc.capitalize)	   # and then obtain a reference to the
+  fn = Object.const_get(ccClass)	   # and then obtain a reference to the
 					   # code challenge class name
 
   json = File.join(cc_dir, cc + ".json")   # construct the JSON test file
@@ -41,9 +51,10 @@ if $0 == __FILE__			   # this code should be run as a script
   json_data.each do |json|		   # iterate over the array;
     params   = json["params"]		   # note that JSON.load() parses the
     expected = json["expected"]	   # file data into a Hash object
-					   # {"params"=>{"n"=><int>}, "expected"=><int|str>}
+					   # {"params"=>{"n"=><int>},
+					   #  "expected"=><int|str>}
 
-    fb = fn.new(params)			   # calculate a fizzbuzz value
+    fb = fn.new(params)			   # calculate a code-challenge value
 					   # from a params hash
 
     if fb == expected			   # check the value against expected
