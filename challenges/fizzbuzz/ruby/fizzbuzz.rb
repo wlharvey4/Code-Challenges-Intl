@@ -2,8 +2,8 @@
 # fizzbuzz.rb
 # =============================================================================
 # CREATED: 2018-10-22
-# UDPATED: 2018-10-22
-# VERSION: 1.0.0
+# UDPATED: 2018-10-23
+# VERSION: 1.2.0
 # AUTHOR : wlharvey4
 # ABOUT  : FIZZBUZZ implemented in Ruby2_5
 # USAGE  : fizzbuzz.rb <int> or Fizzbuzz.new({"n" => <int>})
@@ -17,12 +17,16 @@
 # -- change input to be a hash instead of json
 # -- change symbols to strings for easier equality check
 # -- remove option to compare two values from the command line
+# .............................................................................
+# version 1.2.0 2018-10-23T03:00
+# -- changed attr_accessor to attr_reader
+# -- added a comment to the '==' method
 # -----------------------------------------------------------------------------
 
 # Class Fizzbuzz receives a Ruby Hash object as described below, and calculates
 # a Fizzbuzz  value, which can  be observed  through either #puts  or #inspect.
 class Fizzbuzz
-  attr_accessor :n, :out
+  attr_reader :n, :out
   # 'input' is a Ruby Hash of the form {"n" => <int>}
   # @n is obtained from the Hash value as a Fixnum
   # @out is calculated as one of <int> | "fizz" | "buzz" | "fizzbuzz"
@@ -31,6 +35,7 @@ class Fizzbuzz
     @out  = calculate @n
   end
 
+  # this is Fizzbuzz
   def calculate n
     fizz = n % 3 == 0
     buzz = n % 5 == 0
@@ -43,6 +48,8 @@ class Fizzbuzz
     end
   end
 
+  # expected is a  single value, either an integer, or  a string containing one
+  # of "fizz", "buzz", "fizzbuzz"
   def == expected
       self.out == expected
   end
