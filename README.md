@@ -127,6 +127,10 @@ every language.
 * [Programming Interviews Exposed: Secrets to Landing Your Next Job
   by by John Mongan (Author), Noah Kindler (Author)](https://www.amazon.com/Programming-Interviews-Exposed-Secrets-Landing/dp/0471383562)
 
+* [Project Euler](https://projecteuler.net)
+
 * [CodeKata](http://codekata.com/)
 
 * [Exercism](http://www.kytrinyx.com/exercism/)
+
+* [Simple Programming Problems](https://adriann.github.io/programming_problems.html)
