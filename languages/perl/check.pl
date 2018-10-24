@@ -1,73 +1,83 @@
 #! /usr/bin/env perl5
 
-# perl/check.pl
-# ====================================================
+# languages/perl/check.pl
+# =============================================================================
 # CREATED: 2018-05-19
-# UPDATED: 2018-09-08
-# VERSION 2.1.0
-# AUTHOR: wlharvey4
-# ABOUT: Test script for perl Perl code challenges
-# USAGE: ./check <code-challenge>
-# NOTES:
+# UPDATED: 2018-10-24
+# VERSION: 3.0.0
+# AUTHOR : wlharvey4
+# ABOUT  : Test script for perl Perl code challenges
+# USAGE  : ./check <code-challenge>
+# NOTES: : While coding the challenges in OO paradigm might be cumbersome in
+#	   Perl, yet there are real benefits to doing9 so, i.e., no aliasing of
+#	   typeglobs is necessary, and therefore no need for 'no strict refs',
+#	   nor for a global variable and checking for equality is easy and
+#	   natural.
 # CHANGE-LOG:
-#   v1.1.0 2018-07-04: added `eval' (i.e., `try')
-#          around check for $e->isa Boolean because
-#          a null $e throws an error.
-#   v1.1.1 2018-09-04: changed the interpreter from
-#          perl to perl5
-#   v2.0.0 2018-09-07: Added package names to each
-#	   perl module; updated routine to alias the
-#	   package name along with the code challenge
-#	   name
-#   v2.1.0 2018-09-08: Added `bigint' pragma to
-#          `fibonacci' code challenge, which broke the
-#	   `eq_deeply' check because the return value
-#	   is a Math::BigInt object; so now, check to
-#	   see if the return value is a Math::BigInt
-#	   object, and if so, then convert the `expected'
-#	   value to a Math::BigInt object also
-# ----------------------------------------------------
+# .............................................................................
+# v1.1.0 2018-07-04
+# -- added `eval' (i.e., `try') around check for $e->isa Boolean because a null
+#    $e throws an error.
+# .............................................................................
+# v1.1.1 2018-09-04
+# -- changed the interpreter from perl to perl5
+# .............................................................................
+# v2.0.0 2018-09-07
+# -- Added package names to each perl module; updated routine to alias the
+#    package name along with the code challenge name
+# .............................................................................
+# v2.1.0 2018-09-08
+# -- Added `bigint' pragma to `fibonacci' code challenge, which broke the
+#    eq_deeply' check because the return value is a Math::BigInt object; so now
+#    check to see if the return value is a Math::BigInt object, and if so, then
+#    convert the `expected' value to a Math::BigInt object also
+# .............................................................................
+# v3.0.0 2018-10-24T0015
+# -- Refactored to interface with OO code challenge; works with strCount()
+# -----------------------------------------------------------------------------
 
 # pragmas
 use strict;
-no  strict "refs"; # allows aliasing using variables
 use warnings;
 use v5.16;
-use lib '..';	# gives access to code challenges as modules
-use boolean;	# gives access to Perl boolean values
+use boolean;	   # gives access to Perl boolean values
 
 # Utility libraries
+use Cwd 'abs_path';        # provides abs_path() function
 use File::Spec::Functions; # provides &catfile() for portable path creation
-use Data::Printer output => 'stdout'; # provides &p() (pretty-printing of data structures)
-use JSON;		# provides &decode_json()
-use Test::Deep::NoTest; # provides &eq_deeply()
+use Data::Printer output => 'stdout'; # provides &p() (pretty-printing of data)
+use JSON;                  # provides &decode_json()
 
 # CONSTANTS
-my $CHALLENGES = "challenges";
+my $USAGE = qq{USAGE: ./check <code-challenge>\n};
+my $CHALLENGES = abs_path("../../challenges");
+my $JSONEXT    = ".json";
+my $PERL       = "perl";
+my $PERLPM     = ".pm";
 
 # Variables
-our $fn;	# the aliased code challenge subroutine
-my $cc;		# the name of the code challenge from the CL invocation
-my $ccPM;	# the code challenge module path
-my $ccJSON;	# the code challenge data path
-my $jsonData;	# the code challenge data storage
-my $packg;	# the uppercased name of $cc (a package name)
+my $cc;         # the name of the code challenge from the CL invocation
+my $ccPM;       # absolute path to the code challenge module
+my $ccJSON;     # absolute path to the code challenge JSON data file
+my $jsonData;   # holds the JSON data in memory
+my $packg;      # code challenge Package name
 
-# get the Code Challenge name from the command-line argument
-$cc = $ARGV[0];
-unless ($cc) {
-    die qq{You need to include the name of a code challenge: i.e., './check <code-challenge>'}
-}
+# get the Code Challenge name from the command-line argument and create the package name
+$cc = $ARGV[0] || do {
+    print $USAGE; print qq{ERROR: missing <code-challenge>\n}; exit 1;
+};
 $packg = ucfirst $cc;
 
 # construct paths to resources
-$ccPM = catfile('..', '..', $CHALLENGES, ${cc}, 'perl', ${cc}.'.pm');
-$ccJSON = catfile('..', '..', $CHALLENGES, ${cc}, ${cc}.'.json');
+$ccJSON = catfile($CHALLENGES, $cc, $cc.$JSONEXT);
+$ccPM   = catfile($CHALLENGES, $cc, $PERL, $cc.$PERLPM);
+unless (-e $ccPM) {
+    print $USAGE;
+    print qq{ERROR: $ccPM does not exist\n};
+    exit 1;
+}
 
 require $ccPM; # load the code challenge module
-# alias the Code Challenge's symbol table `<packg>::<cc>' to the `main::fn' symbol table, allowing
-# `&main::fn' access to `<&packg>::<cc>'
-*fn = *{$packg."::".$cc};
 
 $jsonData = eval { # load and decode the test data into a Perl hash reference
     local $/;
@@ -75,7 +85,7 @@ $jsonData = eval { # load and decode the test data into a Perl hash reference
     decode_json(<JSON>);
 } || die $@;
 
-# the test runner; uses eq_deeply
+# the test runner; uses code challenge method 'eq' to test for equality
 our ($i, $w) = (0, 0); # $i :=  test number; $w := number of tests found wrong
 for my $test (@$jsonData) {
     $i++;
@@ -84,12 +94,15 @@ for my $test (@$jsonData) {
     if (eval { $e->isa("JSON::PP::Boolean") }) {  # need to convert JSON boolean to Perl boolean
 	$e = boolean($e)			  # a null $e will throw an error, so simply ignore
     }
-    my $r = fn($p);
+
+    			     # result of applying parameters to code challenge;
+    my $r = $packg->$cc($p); # when using OO Perl, there is no need to alias type globs
+
     # if a code challenge uses the `bigint' pragma (e.g., `fibonacci'), need to convert the
     # `expected' value to a Math::BigInt object in order to compare; don't want to simply load
     # the `bigint' pragma because then all math operations will be converted into Math::BigInt ones
-    if ($r->isa("Math::BigInt")) { $e = Math::BigInt->new($e); }
-    assertError($p, $r, $e)  unless eq_deeply($r, $e);
+    if ($r->output()->isa("Math::BigInt")) { $e = Math::BigInt->new($e); }
+    assertError($p, $r, $e)  unless $r->eq($e);
 }
 
 my $total = scalar @$jsonData;
@@ -109,6 +122,8 @@ sub assertError {
     print("Expected: => ");
     p($e);
     print("Received: => ");
+    p($r->output());
+    print("Package   => ");
     p($r);
     print("----------------------------------------------------\n");
     $w++;

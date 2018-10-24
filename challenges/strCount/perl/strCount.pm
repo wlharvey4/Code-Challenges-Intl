@@ -1,13 +1,14 @@
 # challenges/strCount/perl/strCount.pm
 # =============================================================================
 # CREATED: 2018-06-13
-# UPDATED: 2018-10-23
-# VERSION: 1.1.1
+# UPDATED: 2018-10-24
+# VERSION: 2.1.0
 # AUTHOR : wlharvey4
 # USAGE  : perl5 strCount.pm <str1> <str2>
 # ABOUT  : strCount challenge implemented in Perl
 # NOTES  : The  RE expresion  /$re/g returns an  array of matches;  returning
 #        : the  scalar value  of  an  array returns the array's size.
+#	 : Converted to OO Perl
 # CHANGE_LOG:
 # .............................................................................
 # version 1.1.0 2018-09-07
@@ -16,10 +17,21 @@
 # .............................................................................
 # version 2.0.0 2018-10-23T19:00
 # -- Added README.md; removed description of challenge from About
-# -- Completely refactored module using object-oriented paradyme in order to
+# -- Completely refactored module using object-oriented paradigm in order to
 #    to compare with Ruby; much, much harder to do, with no benefit to
 #    readability and probably not worth the effort for this little code; but,
 #    nevertheless it was a good exercise in coding Perl using Objects.
+# .............................................................................
+# version 2.1.0 2018-10-24T00:00
+# -- Refactored check.pm to interface with this OO-style code; found good
+#    and useful benefits to coding using OO style when running this code as a
+#    module, especially that it is directly reachable without the necessity of
+#    typeglob aliasing, etc, and the code is more readable from that end, even
+#    though this code might look more complicated.  There are also hugh
+#    advantages for comparisons, equality checking, debugging, and observing
+#    the object's internals easily and in color.
+# -- added 'cmp' and 'eq' methods; changed return instance variable to 'output'
+#    to make generic amongst other code challenges as well.
 # -----------------------------------------------------------------------------
 
 package StrCount;
@@ -48,8 +60,22 @@ sub calculate {
     my $self = shift;
     my $char = $self->char();
     my @c = $self->str() =~ /$char/g;
-    $self->count(scalar @c);
+    $self->output(scalar @c);
     $self;
+}
+
+sub cmp {
+    my $self = shift;
+    my $expected = shift;
+    if ($self->output() == $expected) { 0 }
+    elsif ($self->output() < $expected) { -1 }
+    else { 1 }
+}
+
+sub eq {
+    my $self = shift;
+    my $expected = shift;
+    $self->cmp($expected) == 0;
 }
 
 sub str {
@@ -64,15 +90,15 @@ sub char {
     $self->{char};
 }
 
-sub count {
+sub output {
     my $self = shift;
-    if (@_) { $self->{count} = shift }
-    $self->{count};
+    if (@_) { $self->{output} = shift }
+    $self->{output};
 }
 
 sub inspect {
     my $self = shift;
-    my ($str, $char, $count) = ($self->str(), $self->char(), $self->count());
+    my ($str, $char, $count) = ($self->str(), $self->char(), $self->output());
     print "strCount of '$char' in '$str' is $count.\n";
 }
 
