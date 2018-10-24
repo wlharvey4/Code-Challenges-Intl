@@ -34,13 +34,17 @@
 # .............................................................................
 # v3.0.0 2018-10-24T0015
 # -- Refactored to interface with OO code challenge; works with strCount()
+# .............................................................................
+# v3.1.0 2018-10-24T00:45
+# -- Made further refactorings; gave variables better names; reduced comments;
+# -- removed all global variables
 # -----------------------------------------------------------------------------
 
 # pragmas
 use strict;
 use warnings;
 use v5.16;
-use boolean;	   # gives access to Perl boolean values
+use boolean;	           # gives access to Perl boolean values
 
 # Utility libraries
 use Cwd 'abs_path';        # provides abs_path() function
@@ -49,7 +53,7 @@ use Data::Printer output => 'stdout'; # provides &p() (pretty-printing of data)
 use JSON;                  # provides &decode_json()
 
 # CONSTANTS
-my $USAGE = qq{USAGE: ./check <code-challenge>\n};
+my $USAGE      = qq{USAGE: ./check <code-challenge>\n};
 my $CHALLENGES = abs_path("../../challenges");
 my $JSONEXT    = ".json";
 my $PERL       = "perl";
@@ -61,8 +65,10 @@ my $ccPM;       # absolute path to the code challenge module
 my $ccJSON;     # absolute path to the code challenge JSON data file
 my $jsonData;   # holds the JSON data in memory
 my $packg;      # code challenge Package name
+my ($i, $w);    # $i :=  test number; $w := number of tests found wrong
 
-# get the Code Challenge name from the command-line argument and create the package name
+# get the Code Challenge name from the command-line argument and create the
+# package name
 $cc = $ARGV[0] || do {
     print $USAGE; print qq{ERROR: missing <code-challenge>\n}; exit 1;
 };
@@ -77,32 +83,35 @@ unless (-e $ccPM) {
     exit 1;
 }
 
-require $ccPM; # load the code challenge module
-
-$jsonData = eval { # load and decode the test data into a Perl hash reference
+require $ccPM;     # load the code challenge module
+$jsonData = eval { # load the JSON data into an Array ref
     local $/;
     open JSON, '<', $ccJSON;
     decode_json(<JSON>);
 } || die $@;
 
-# the test runner; uses code challenge method 'eq' to test for equality
-our ($i, $w) = (0, 0); # $i :=  test number; $w := number of tests found wrong
-for my $test (@$jsonData) {
+($i, $w) = (0, 0);
+for my $test (@$jsonData) { # iterate over the JSON tests
     $i++;
-    my $p = $test->{params};
-    my $e = $test->{expected};
-    if (eval { $e->isa("JSON::PP::Boolean") }) {  # need to convert JSON boolean to Perl boolean
-	$e = boolean($e)			  # a null $e will throw an error, so simply ignore
+    my $params   = $test->{params};
+    my $expected = $test->{expected};
+    # need to convert JSON boolean to Perl boolean because
+    # a null $e will throw an error
+    if (eval { $expected->isa("JSON::PP::Boolean") }) {  
+	$expected = boolean($expected)			  
     }
 
-    			     # result of applying parameters to code challenge;
-    my $r = $packg->$cc($p); # when using OO Perl, there is no need to alias type globs
+    my $result = $packg->$cc($params); # when using OO Perl, there is no need to alias
+                                       # type globs
 
-    # if a code challenge uses the `bigint' pragma (e.g., `fibonacci'), need to convert the
-    # `expected' value to a Math::BigInt object in order to compare; don't want to simply load
-    # the `bigint' pragma because then all math operations will be converted into Math::BigInt ones
-    if ($r->output()->isa("Math::BigInt")) { $e = Math::BigInt->new($e); }
-    assertError($p, $r, $e)  unless $r->eq($e);
+    # if a code challenge uses the `bigint' pragma (e.g., `fibonacci'), need to
+    # convert the `expected' value to a Math::BigInt object in order to
+    # compare; don't want to simply load the `bigint' pragma because then all
+    # math operations will be converted into Math::BigInt ones
+    if ($result->output()->isa("Math::BigInt")) {
+	$expected = Math::BigInt->new($expected);
+    }
+    assertError($params, $result, $expected)  unless $result->eq($expected);
 }
 
 my $total = scalar @$jsonData;
