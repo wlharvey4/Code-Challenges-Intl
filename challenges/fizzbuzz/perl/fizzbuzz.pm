@@ -19,6 +19,10 @@
 # version 3.0.0 2018-10-24T21:30
 # -- complete refactor into Perl OO style with full double dispatch for
 #    equality checking; no reflection in OO;
+# .............................................................................
+# version 3.0.1 2018-10-24T10:05
+# -- revised some comments;
+# -- revised switch statement to remove unnecessary statements;
 # -----------------------------------------------------------------------------
 
 # GLOBAL DEPENDENCIES
@@ -100,7 +104,7 @@ sub cc {
     $self->{cc};
 }
 
-# eq(other)
+# eq(other) ==> 0 | 1
 # .............................................................................
 # It  is  impossible  to tell  what  type  $self  or  $other is  without  doing
 # reflection; therefore, utilize double dispatch to resolve the equality of two
@@ -110,7 +114,7 @@ sub cc {
 # object,  call the  FBN constructor  to wrap  this `expected'  value in  a FBN
 # subclass object and then proceed with checking for equality.
 # -----------------------------------------------------------------------------
-# @_ := ($self:Fizzbuzz, $other:Fizzbuzz | expected)
+# @_ := (Fizzbuzz | Expected)
 # ==> 0 | 1
 
 sub eq {
@@ -176,32 +180,15 @@ package FBN {
     sub new {
 	my $class = shift;
 	my $expected = shift;
-	my $self;
 
         SWITCH:
-	for ($expected) {
-	    if (/^\d+$/) {
-		$self = N->new($expected);
-		last SWITCH;
-	    }
-	    if (/^$FZ::FZ$/) {
-	    	$self = FZ->new();
-		last SWITCH;
-	    }
-	    if (/^$BZ::BZ$/) {
-	    	$self = BZ->new();
-		last SWITCH;
-	    }
-	    if (/^$FZBZ::FZBZ$/) {
-	    	$self = FZBZ->new();
-		last SWITCH;
-	    }
-	    else {
-	    	die "Invalid value for expected: $expected\n";
-	    }
+        for ($expected) {
+	    if ( /^\d+$/ )         { return N   ->new($expected) }
+	    if ( /^$FZ::FZ$/ )     { return FZ  ->new()          }
+	    if ( /^$BZ::BZ$/ )     { return BZ  ->new()          }
+	    if ( /^$FZBZ::FZBZ$/ ) { return FZBZ->new()          }
+	    else { die "Invalid value for expected: $expected\n" }
 	}
-
-	$self;
     }
 
     # value->() ==> int | string
