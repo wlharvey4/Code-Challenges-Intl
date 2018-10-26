@@ -1,4 +1,5 @@
 [
+  {"params": {"n": 0}, "expected": 0},
   {"params": {"n": 1}, "expected": 1},
   {"params": {"n": 2}, "expected": 1},
   {"params": {"n": 3}, "expected": 2},
@@ -15,5 +16,7 @@
   {"params": {"n": 14}, "expected": 377},
   {"params": {"n": 15}, "expected": 610},
   {"params": {"n": 16}, "expected": 987},
-  {"params": {"n": 17}, "expected": 1597}
+  {"params": {"n": 17}, "expected": 1597},
+  {"params": {"n": 18}, "expected": 2584},
+  {"params": {"n": 19}, "expected": 4181}
 ]

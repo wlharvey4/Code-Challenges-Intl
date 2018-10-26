@@ -3,8 +3,8 @@
 # Code-Challenges-Intl/challenges/fibonacci/perl/fibonacci.pm
 # =============================================================================
 # CREATED: 2018-09-07
-# UPDATED: 2018-10-25
-# VERSION: 2.0.0
+# UPDATED: 2018-10-26
+# VERSION: 2.1.0
 # AUTHOR: wlharvey4
 # USAGE: perl5 fibonacci.pm <n>
 # CHALLENGE: Fibonacci sequence in Perl
@@ -66,6 +66,16 @@
 # -- adjust nth term to be 1-based instead of 0-based;
 # -- in accordance with this change, I changed the JSON test table, which will
 #    break every other implementation until I catch up.
+# .............................................................................
+# version 2.1.0 2018-10-26T02:15
+# -- Refactor  to  zero-based  representation  only (remove  option  to  choose
+#    between initial seed values  of the old style (1, 1)  and the modern style
+#    (0, 1); just use the modern;
+# -- refactor calculation  function to use  a "global" local cache  without the
+#    need to include in parameters;
+# -- refactor inspect() method to show cache values;
+# -- adjust JSON test values to start at F0 := 0, and run 20 tests;
+# -- clean up code and documentation;
 # =============================================================================
 
 use strict;
@@ -82,40 +92,35 @@ use Data::Printer output => 'stdout';
 
 package Fibonacci;
 
-my $USAGE = qq{
-  USAGE: fibonacci n (n:Int >= 0)\n\n};
+my $USAGE = qq{\n\tUSAGE: fibonacci n (n:Int >= 0)\n\n};
 
-my @DEFAULT = (1, 1);
+# Make @cache a "global" local variable to allow sharing if multiple
+# Fibonacci objects are ever instantiated simultaneously
+my @cache = (0, 1); # seed values, zero-based, i.e. F0 := 0, F1 := 1
 
 # =============================================================================
-# Fibonacci->fibonacci({n => INT[, s => INT array]}) ==> Fibonacci object
+# Fibonacci->fibonacci({ n => INT }) ==> Fibonacci value for nth term
 # .............................................................................
 # Fibonacci constructor
 # -----------------------------------------------------------------------------
 # Params: hash ref of:
-#         n => INT -- representing the nth term of the Fibonacci sequence to
-#                     calculate; must be >= 1;
-#         [s => INT array] -- (0, 1) | (1, 1), representing the seed values for
-#                     the cache; optional; defaults of (1, 1) will be used if
-#                     not given;
+#     n => INT -- represents the sought-after term of the Fibonacci sequence to
+#                 calculate (i.e., its nth term); n >= 0
 # _____________________________________________________________________________
 # ==> Fibonacci object
-#     n => INT -- representing the nth term of the Fibonacci sequence to
-#                 calculate
-#     cache => (INT, INT) -- representing the two intial values, limited to
-#                            either (0, 1) or (1, 1)
-#     cc => INT -- representing the nth Fibonacci sequence term (starting at 1)
+#     instance variables:
+#     -------------------
+#     params: INT -- represents the term of the Fibonacci sequence to calculate
+#     cc => INT:  -- represents the nth Fibonacci sequence term
 # =============================================================================
 
 sub fibonacci {
-    my $class  = shift;
-    my ($params) = @_;
-    unless (grep /s/, keys %$params) { $params->{s} = \@DEFAULT }
-    my $self = bless {}, $class;
+    my $class  = shift; die "This is a constructor" if ref $class;
+    my $params = shift;
+    my $self   = bless {}, $class;
 
     $self->params($params);
-    $self->cc(calculate( ($self->params(), $self->cache()) ));
-
+    $self->cc( calculate($self->params()) );
     $self;
     
 } # END fibonacci
@@ -138,29 +143,26 @@ sub fibonacci {
 # =============================================================================
 
 sub calculate {
-    my ($n, $cache) = @_; # $n is 1 based, so needs to be reduced by 1 for
-                          # array indices
-    
-    return $cache->[$n-1] if scalar @$cache > $n-1;
-    return $cache->[$n-1] =
-	calculate(($n-2, $cache)) +
-	calculate(($n-1, $cache));
+    my $n = shift;
+    return $cache[ $n ] if scalar @cache > $n;
+    return $cache[ $n ] = calculate( $n-2 ) + calculate( $n-1 );
 
-} # END fibonacci()
+} # END calculate()
 # /////////////////////////////////////////////////////////////////////////////
 
 
 # =============================================================================
-# params() | params({n => INT}) ==> INT
+# params()             ==> INT
+# params( {n => INT} ) ==> INT
 # .............................................................................
-# Attribute accessor for params instance variable 'n', representing the nth
-# term of the Fibonacci sequence to calculate; must be greater than or equal to
+# Attribute accessor for 'params' instance  variable, representing the nth term
+# of the  Fibonacci sequence  to calculate;  must be greater  than or  equal to
 # zero.
 # -----------------------------------------------------------------------------
-# Params: undef for GETTER of param 'n'
-#       | {n => INT} for SETTER of param 'n'; constraint: n >= 1
+# Params: undef for GETTER
+#       | {n => INT} for SETTER of params; n >= 0
 # _____________________________________________________________________________
-# ==> INT, value of param 'n'
+# ==> INT, representing nth term of Fibonacci sequence to calculate
 # =============================================================================
 
 sub params {
@@ -168,61 +170,28 @@ sub params {
     if (@_) {
 	my $params = shift;
 	my $n = $params->{n};
-	unless ($n >= 1) {
+	unless ($n >= 0) {
 	    print STDERR $USAGE;
 	    print STDERR
           qq{ERROR: param n must be greater than or equal to zero, not $n\n\n};
 	    exit -1;
 	}
 	$self->{n} = $n;
-
-	if (grep "/s/", keys %$params) {
-	    $self->cache($params->{s});
-	}
     }
     $self->{n};
+
 } # END params()
 # /////////////////////////////////////////////////////////////////////////////
 
 
 # =============================================================================
-# cache() | cache( @cache ) ==> @cache
+# cc()      ==> INT
+# cc( INT ) ==> INT
 # .............................................................................
-# Attribute accessor for cache instance variable, which represents the initial
-# seed values of the Fibonacci sequence; this must be either (0, 1), or (1, 1);
-# -----------------------------------------------------------------------------
-# Params: undef  for GETTER
-#       | @cache for SETTER; @cache == (0, 1) | (1, 1)
-# _____________________________________________________________________________
-# ==> @cache
-# =============================================================================
-
-sub cache {
-    my $self = shift;
-    if (@_) {
-	my $cache = shift;
-	unless (@$cache >= 2 && $cache->[1] == 1 && $cache->[0] =~ /^[01]$/) {
-	    print STDERR $USAGE;
-	    print STDERR
-		qq{cache must be either (0,1) or (1,1), not @$cache.\n\n};
-	    exit -1;
-	}
-	$self->{cache} = $cache;
-    }
-    $self->{cache};
-    
-} # END cache()
-# /////////////////////////////////////////////////////////////////////////////
-
-
-# =============================================================================
-# cc() | cc( INT ) ==> INT
-# .............................................................................
-# Attribute accessor for cc
+# Attribute accessor for cc, calculated value of nth Fibonacci term
 # -----------------------------------------------------------------------------
 # Params: undef: for GETTER
-#       | INT:   for SETTER, where INT represents the solution to the code
-#                challenge
+#       | INT:   for SETTER
 # _____________________________________________________________________________
 # ==> INT:  solution to the code challenge
 # =============================================================================
@@ -237,11 +206,11 @@ sub cc {
 
 
 # =============================================================================
-# eq(INT) ==> 0 | 1
+# eq( INT ) ==> 0 | 1
 # .............................................................................
-# eq() instance method
+# Equality instance method
 # -----------------------------------------------------------------------------
-# Params: INT represented an expected value
+# Params: INT represents an expected value (not a Fibonacci object)
 # _____________________________________________________________________________
 # ==> 0 | 1
 # =============================================================================
@@ -250,18 +219,20 @@ sub eq {
     my $self  = shift;
     my $other = shift;
     $self->cc() == $other;
-}
+
+} # END eq()
+# /////////////////////////////////////////////////////////////////////////////
 
 
 # =============================================================================
-# inspect([-v]) ==> pretty-print
+# inspect( [-v] ) ==> describe or (if -v) pretty-print
 # .............................................................................
-# Inspect method for internals of Fibonacci object
+# Inspect instance method for inspecting the internals of Fibonacci object
 # -----------------------------------------------------------------------------
-# Params: undef ==> return sentence
-#       | -v    ==> increase verbosity of pretty-printing
+# Params: undef ==> return sentence description
+#       | -v    ==> increase verbosity by pretty-printing object internals
 # _____________________________________________________________________________
-# ==> Fibonacci innards pretty-printed
+# ==> Fibonacci innards described and/or pretty-printed
 # =============================================================================
 
 sub inspect {
@@ -275,74 +246,72 @@ sub inspect {
 	    exit -1;
 	}
     }
-    my ($n, $cc, @initial) =
-	($self->params(), $self->cc(), @{$self->cache()}[0,1]);
+    my ($n, $cc) =
+	($self->params(), $self->cc());
 
-    print qq{Fibonacci $n == $cc (starting at (@initial)).\n\n};
+    print qq{Fibonacci $n == $cc.\n};
+    print "@cache";
+    print "\n\n";
 
-    Data::Printer::p($self) if $verbosity;
+    if ($verbosity) {
+	Data::Printer::p($self);
+    }
     
 } # END inspect()
 # /////////////////////////////////////////////////////////////////////////////
 
 
 # =============================================================================
-# main( [-v] INT [INT] ) ==> INT
+# main( [-v] INT ) ==> INT
 # .............................................................................
 # Main function to run Fibonacci from the command-line
 # -----------------------------------------------------------------------------
-# Options:[-v] option for increasing verbosity of result, pretty-printing the
+# Options:[-v] option  for increasing verbosity of  result, pretty-printing the
 #              returned Fibonacci object;
-# Params: INT: representing the nth term of the Fibonacci sequence to calculate
-#              and return; must be >= 1;
-#        [INT]: optional int, representing the starting value; may be zero
-#              or 1 (1 is the default)
+# Params: INT: represents  the term of the Fibonacci sequence  to calculate; is
+#              0-based; must be >= 0;
 # _____________________________________________________________________________
-# ==>     INT: representing the calculated Fibonacci term
+# ==>     INT: represents the calculated Fibonacci value for the requested term
 # =============================================================================
 
 sub main {
 
     my $verbosity;
-    if ($_[0] eq '-v') {
-	$verbosity = shift;
-    }
-    unless (@_ == 1 || @_ == 2) {
-	print $USAGE;
-	exit 0;
-    }
+    $verbosity = shift                if $_[0] eq '-v';
+    print STDERR $USAGE && exit -1    unless @_ == 1;
 
-    my $n = shift; # term to calculate a value for
-    unless ($n =~ /^[[:digit:]]+$/ && $n >= 1) {
+    my $n = shift;                  # seeking nth term of Fibonacci sequence
+    unless ($n =~ /^[[:digit:]]+$/ && $n >= 0) {
 	print STDERR $USAGE;
 	print STDERR
 	    "ERROR: n must be greater than or equal to zero (not $n).\n\n";
 	exit -1;
     }
 
-    my $s = \@DEFAULT; # default seed values
-    if (@_) {
-	my $s0 = shift; # update the initial seed value
-	unless ($s0 == 0 || $s0 == 1) { # the only allowed starting values
-	    print STDERR $USAGE;
-	    print STDERR
-		"ERROR: An initial seed value may be 0 or 1 (not $s0).\n\n";
-	    exit -1;
-	}
-	$s->[0] = $s0;
-    }
-
-    my $fib = Fibonacci->fibonacci({ n=> $n, s=> $s });
+    my $fib = Fibonacci->fibonacci({ n=> $n });
     $fib->inspect($verbosity);
 
 } # END main()
 # /////////////////////////////////////////////////////////////////////////////
 
 
-# Invoke Fibonacci main(@ARGV) from the command-line; otherwise, treat as a
-# module.
 # =============================================================================
+# perl5 fibonacci [ -v ] INT
+# ./fibonacci [ -v ] INT
+# .............................................................................
+# Command-line invocation; runs the main() function with command-line args
+# -----------------------------------------------------------------------------
+# Options: -v  -- pretty-print object
+# Params : INT -- sought-after term of the Fibonacci sequence
+# _____________________________________________________________________________
+# ==> INT -- represents the nth term of the Fibonacci sequence
+# =============================================================================
+
 main(@ARGV) if not caller();
+
+# END command-line
+# /////////////////////////////////////////////////////////////////////////////
+
 
 print "";
 __END__
