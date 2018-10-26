@@ -4,7 +4,7 @@
 # =============================================================================
 # CREATED: 2018-09-07
 # UPDATED: 2018-10-26
-# VERSION: 2.2.0
+# VERSION: 2.2.1
 # AUTHOR: wlharvey4
 # USAGE: perl5 fibonacci.pm <n>
 # CHALLENGE: Fibonacci sequence in Perl
@@ -90,6 +90,9 @@
 # .............................................................................
 # version 2.2.0 2018-10-26T03:00
 # -- added Fibonacci Class documentation
+# .............................................................................
+# version 2.2.1 2018-10-26T03:15
+# -- added Global Variables section to documentation
 # =============================================================================
 
 use strict;
@@ -107,20 +110,26 @@ use Data::Printer output => 'stdout';
 # .............................................................................
 # Calculate a Fibonacci sequence value, given a term
 # -----------------------------------------------------------------------------
+# Global Variables:
+# +++++++++++++++++
+# @cache : INT ARRAY -- cache  of calculated Fibonacci values, indexed by term;
+#                       this  is  not   a  true  global,  but   global  to  all
+#                       instantiated objects in the main() function;
+# _____________________________________________________________________________
 # Instance Variables:
-# -------------------
+# +++++++++++++++++++
 # params : INT -- term of Fibonacci sequence to calculate
 # cc     : INT -- calculated value of nth term of Fibonacci sequence
 # _____________________________________________________________________________
-# Instance Methods
-# ----------------
+# Instance Methods:
+# +++++++++++++++++
 # params() ==> INT      -- Setter and Getter
 # cc()     ==> INT      -- Getter (set from within constructor)
 # eq()     ==> BOOLEAN  -- Getter
 # inspect()==> STRING   -- Description / Pretty-printer
 # _____________________________________________________________________________
 # Functions:
-# ----------
+# ++++++++++
 # main()      -- Command-line entry point
 # calculate() -- Recursive function to calculate the value of a Fibonacci term
 # =============================================================================
