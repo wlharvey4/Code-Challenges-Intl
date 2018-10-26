@@ -4,7 +4,7 @@
 # =============================================================================
 # CREATED: 2018-09-07
 # UPDATED: 2018-10-26
-# VERSION: 2.1.0
+# VERSION: 2.2.0
 # AUTHOR: wlharvey4
 # USAGE: perl5 fibonacci.pm <n>
 # CHALLENGE: Fibonacci sequence in Perl
@@ -87,6 +87,9 @@
 # .............................................................................
 # version 2.1.1 2018-10-26T02:35
 # -- added note to describe reasons for last refactoring;
+# .............................................................................
+# version 2.2.0 2018-10-26T03:00
+# -- added Fibonacci Class documentation
 # =============================================================================
 
 use strict;
@@ -99,7 +102,28 @@ use Data::Printer output => 'stdout';
 
 
 
-
+# =============================================================================
+# Fibonacci Class
+# .............................................................................
+# Calculate a Fibonacci sequence value, given a term
+# -----------------------------------------------------------------------------
+# Instance Variables:
+# -------------------
+# params : INT -- term of Fibonacci sequence to calculate
+# cc     : INT -- calculated value of nth term of Fibonacci sequence
+# _____________________________________________________________________________
+# Instance Methods
+# ----------------
+# params() ==> INT      -- Setter and Getter
+# cc()     ==> INT      -- Getter (set from within constructor)
+# eq()     ==> BOOLEAN  -- Getter
+# inspect()==> STRING   -- Description / Pretty-printer
+# _____________________________________________________________________________
+# Functions:
+# ----------
+# main()      -- Command-line entry point
+# calculate() -- Recursive function to calculate the value of a Fibonacci term
+# =============================================================================
 
 package Fibonacci;
 
@@ -118,11 +142,11 @@ my @cache = (0, 1); # seed values, zero-based, i.e. F0 := 0, F1 := 1
 #     n => INT -- represents the sought-after term of the Fibonacci sequence to
 #                 calculate (i.e., its nth term); n >= 0
 # _____________________________________________________________________________
-# ==> Fibonacci object
-#     instance variables:
+# ==> Fibonacci Class
+#     Instance Variables:
 #     -------------------
 #     params: INT -- represents the term of the Fibonacci sequence to calculate
-#     cc => INT:  -- represents the nth Fibonacci sequence term
+#     cc    : INT -- represents the calculated nth Fibonacci sequence term
 # =============================================================================
 
 sub fibonacci {
