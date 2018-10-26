@@ -43,6 +43,14 @@
 #     sequencing starting at (1,1) for the tests.  Perhaps the answer is to say
 #     that if the seed  values are (1,1), then the sequence  is 1-based, but if
 #     it is (0,1), then it is 0-based.
+#  -- I have decided that it makes  more sense to use the modern interpretation
+#     of the sequence beginning at F0 := 0,  F1 := 1 i.e. (0, 1) instead of (1,
+#     1), as  originally designed.   Therefore, I have  refactored the  code by
+#     removing the option  to choose the starting cache values;  in addition, I
+#     have decided to go  with the idea of using just  one "global" cache array
+#     instead  of having  each object  create its  own; this  way, if  multiple
+#     objects are instantiated simultaineously, they  will share one cache, and
+#     a cache need not be included in the parameters of the recursive function.
 # CHANGE_LOG:
 # .............................................................................
 # version 1.0.0 2018-09-07
@@ -76,6 +84,9 @@
 # -- refactor inspect() method to show cache values;
 # -- adjust JSON test values to start at F0 := 0, and run 20 tests;
 # -- clean up code and documentation;
+# .............................................................................
+# version 2.1.1 2018-10-26T02:35
+# -- added note to describe reasons for last refactoring;
 # =============================================================================
 
 use strict;
