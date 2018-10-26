@@ -4,11 +4,11 @@
 # =============================================================================
 # CREATED: 2018-09-07
 # UPDATED: 2018-10-26
-# VERSION: 2.2.1
-# AUTHOR: wlharvey4
-# USAGE: perl5 fibonacci.pm <n>
-# CHALLENGE: Fibonacci sequence in Perl
-# NOTES:
+# VERSION: 2.2.2
+# AUTHOR : wlharvey4
+# ABOUT  : Calculate a Fibanacci sequence term in Perl
+# USAGE  : perl5 fibonacci.pm [-v] <n>
+# NOTES  :
 #  -- Start using package identifiers
 #  -- Start making  these packages  callable either as  a module  (from another
 #     package) or  a script  (from the  command line), which  has been  named a
@@ -93,6 +93,9 @@
 # .............................................................................
 # version 2.2.1 2018-10-26T03:15
 # -- added Global Variables section to documentation
+# .............................................................................
+# version 2.2.2 2018-10-26T03:20
+# -- cleaned up documentation a smidge
 # =============================================================================
 
 use strict;
