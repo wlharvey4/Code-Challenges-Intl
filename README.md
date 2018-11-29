@@ -123,6 +123,8 @@ every language.
   something your full attention long enough to gain depth and understand nuances.  Talent is
   bullshit.  Skill is cultivated.  Passion is curated.
 
+* [Learn Programming Language from Diving into Source Code](http://stardiviner.github.io/Blog/Learn-Programming-Language-from-Diving-into-Source-Code.html)
+
 ## Resources
 * [Programming Interviews Exposed: Secrets to Landing Your Next Job
   by by John Mongan (Author), Noah Kindler (Author)](https://www.amazon.com/Programming-Interviews-Exposed-Secrets-Landing/dp/0471383562)
