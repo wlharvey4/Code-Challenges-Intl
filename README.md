@@ -136,3 +136,5 @@ every language.
 * [Exercism](http://www.kytrinyx.com/exercism/)
 
 * [Simple Programming Problems](https://adriann.github.io/programming_problems.html)
+
+* [Rosetta Code](https://www.rosettacode.org/wiki/Rosetta_Code)
