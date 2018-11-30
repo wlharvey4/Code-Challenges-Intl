@@ -1,0 +1,8 @@
+[
+    {"params": {"arr": []}, "expected": null},
+    {"params": {"arr": ["abc"]}, "expected": "abc"},
+    {"params": {"arr": ["abc", "def"]}, "expected": "abc"},
+    {"params": {"arr": ["abc", "def", "ghij"]}, "expected": "ghij"},
+    {"params": {"arr": ["abc", "def", "ghij", "k"]}, "expected": "ghij"},
+    {"params": {"arr": ["zyxwv", "abc", "def", "ghij", "k"]}, "expected": "zyxwv"}
+]
