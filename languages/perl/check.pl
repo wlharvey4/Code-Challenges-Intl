@@ -1,10 +1,10 @@
-#! /usr/bin/env perl5
+#! /usr/bin/env perl
 
 # languages/perl/check.pl
 # =============================================================================
 # CREATED: 2018-05-19
-# UPDATED: 2018-10-24
-# VERSION: 3.1.1
+# UPDATED: 2018-11-30
+# VERSION: 3.1.2
 # AUTHOR : wlharvey4
 # ABOUT  : Test script for perl Perl code challenges
 # USAGE  : ./check <code-challenge>
@@ -42,6 +42,11 @@
 # v3.1.1 2018-10-24T21:40
 # -- refactored method output() to method cc(); nothing needed to be changed
 #    to work with complete fizzbuzz refactoring into Perl OO style.
+# .............................................................................
+# v3.1.2 2018-11-30T17:45
+# -- changed to perl from perl5;
+# -- wrapped 'isa' check for Math::BigInt in eval to avoid error thrown when
+#    'result' is undefined.
 # -----------------------------------------------------------------------------
 
 # pragmas
@@ -101,18 +106,18 @@ for my $test (@$jsonData) { # iterate over the JSON tests
     my $expected = $test->{expected};
     # need to convert JSON boolean to Perl boolean because
     # a null $e will throw an error
-    if (eval { $expected->isa("JSON::PP::Boolean") }) {  
-	$expected = boolean($expected)			  
+    if (eval { $expected->isa("JSON::PP::Boolean") }) {
+	$expected = boolean($expected);
     }
 
-    my $result = $packg->$cc($params); # when using OO Perl, there is no need 
+    my $result = $packg->$cc($params); # when using OO Perl, there is no need
                                        # to alias type globs
 
     # if a code challenge uses the `bigint' pragma (e.g., `fibonacci'), need to
     # convert the `expected' value to a Math::BigInt object in order to
     # compare; don't want to simply load the `bigint' pragma because then all
     # math operations will be converted into Math::BigInt ones
-    if ($result->cc()->isa("Math::BigInt")) {
+    if (eval { $result->cc()->isa("Math::BigInt") }) {
 	$expected = Math::BigInt->new($expected);
     }
     assertError($params, $result, $expected)  unless $result->eq($expected);

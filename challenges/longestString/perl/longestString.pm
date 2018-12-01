@@ -3,15 +3,33 @@
 # LANGUAGE: Perl
 # FILENAME: longestString.pm
 # CREATED : 2018-11-29
-# UPDATED : 2018-11-29
-# VERSION : 0.0.1
+# UPDATED : 2018-11-30
+# VERSION : 0.1.0
 # ------------------------------------------------------------------------------
 # CHALLENGE: Given an array of strings, return the longest.
 # NOTES:
+# 1. A whole bunch of problems ensued from allowing an empty array; an empty
+#    array is equivalent to an undef'ed value, which is falsey, etc.  So, a
+#    whole lot of checking needs to be done that would be unnecessary if empty
+#    arrays were simply not allowed.  Be that as it may, empty arrays should be
+#    allowed and should return 'undef'.
+# 2. Allowing an empty array causes problems in 'check' when it attempts to
+#    determine whether a result 'isa' BigInt; the best solution is to wrap this
+#    check in an 'eval', just like the check for 'isa' Boolean, rather than
+#    override the default 'isa' method here.  Doing so solves one problem, but
+#    raises another, e.g., the eg() method now throws uninitialized value
+#    warnings.  The solution is to check for an uninitialzed value immediately,
+#    and return true if so.
 # ------------------------------------------------------------------------------
 # CHANGE-LOG:
+# ..............................................................................
 # -- 2018-11-29T19:45 ver.0.0.1
 #    Initial coding; works from the command-line, but not via check
+# ..............................................................................
+# -- 2018-11-30T21:15 ver.0.1.0
+#    Refactored cc() and params() to be accessors instead of getters; refactored
+#    longestString() to use accessors; still works from the command-line;
+#    checked for undef values in multiple methods and responded appropriately.
 # ==============================================================================
 
 use strict;
@@ -32,9 +50,12 @@ package LongestString {
         my $class  = shift;
         my $params = shift;
         my @arr = @{$params->{arr}};
+        my $self = bless {}, $class;
 
-        my $longest = calculate(@arr);
-        return bless {arr => [@arr], longest => $longest}, $class;
+        $self->params( @arr );
+        $self->cc( calculate( @arr ));
+
+        return $self;
 
     } # END longestString()
 
@@ -60,42 +81,49 @@ package LongestString {
 
 
     # self->cc() ==> string
+    # self->cc(cc) ==> string
     # ..........................................................................
-    # Attribute getter for longest string
+    # Attribute accessor for longest string
     # --------------------------------------------------------------------------
     # @_ := ()
+    #    := (string)
     # ==> string
     # ==========================================================================
     sub cc {
         my $self = shift;
+        $self->{longest} = shift if @_;
         return $self->{longest};
     } # END cc()
 
 
     # self->arr() ==> array of strings
+    # self->arr(params) ==> array of strings
     # ..........................................................................
-    # Attribute getter for input array
+    # Attribute accessor for input array
     # --------------------------------------------------------------------------
     # @_ := ()
+    #    := (string-arr)
     # ==> array of strings representing input
     # ==========================================================================
-    sub arr {
+    sub params {
         my $self = shift;
-        return @{$self->{arr}};
+        $self->{arr} = [@_] if @_;
+        return exists $self->{arr} ? @{$self->{arr}} : ();
     } # END arr()
 
 
-    # self->eq(other) ==> 0 | 1
+    # self->eq(string) ==> 0 | 1
     # ..........................................................................
-    # Method to compare two objects for equality
+    # Method to compare the object's longest against a string for equality
     # --------------------------------------------------------------------------
-    # @_ := LongestString instance
+    # @_ := string to compare against
     # ==> 0 | 1
     # ==========================================================================
     sub eq {
         my $self  = shift;
-        my $other = shift;
-        return $self->cc() eq $other->cc();
+        return 1 unless $self;
+        my $str = shift;
+        return $self->cc() eq $str;
     } # END eq()
 
 
