@@ -1,10 +1,13 @@
+#! /usr/bin/env perl
+
+# Code-Challenges-Intl/challenges/longestString/perl/longestString.pm
 # ==============================================================================
 # PROJECT : Code-Challenge-Intl
 # LANGUAGE: Perl
 # FILENAME: longestString.pm
 # CREATED : 2018-11-29
 # UPDATED : 2018-11-30
-# VERSION : 0.1.0
+# VERSION : 1.0.0
 # ------------------------------------------------------------------------------
 # CHALLENGE: Given an array of strings, return the longest.
 # NOTES:
@@ -30,16 +33,43 @@
 #    Refactored cc() and params() to be accessors instead of getters; refactored
 #    longestString() to use accessors; still works from the command-line;
 #    checked for undef values in multiple methods and responded appropriately.
+# ..............................................................................
+# -- 2018-11-30T23:55 ver.1.0.0
+#    Added better documentation
 # ==============================================================================
 
 use strict;
 use warnings;
 use v5.16;
-use Data::Printer output => 'stderr';
+
+use Data::Printer output => 'stdout';
+
+# LongestString Class
+# ..............................................................................
+# Given an array of strings, return the longest string.
+# -------------------------------------------------------------------------------
+# Private Instance Variables:
+# +++++++++++++++++++++++++++
+# arr     : [STRING] -- the array of strings; may be empty
+# longest : STRING   -- the longest string; may return 'undef' for empty params
+# ------------------------------------------------------------------------------
+# Public Instance Methods:
+# ++++++++++++++++++++++++
+# params() ==> [STRING] -- attribate accessor; optional param: [STRING]
+# cc()     ==> STRING   -- attribute accessor; optional param: STRING
+# eq()     ==> BOOLEAN  -- getter; required param: STRING
+# inspect()==> MESSAGE  -- pretty-printer; optional -v | -V
+# usage()  ==> MESSAGE  -- usage message
+# ------------------------------------------------------------------------------
+# Functions:
+# ++++++++++
+# main()      -- Command-line entry point
+# calculate() -- given an array of strings, find the longest
+# ==============================================================================
 
 package LongestString {
 
-    # LongestString->longestString({arr => [array-of-strings]}) ==> string
+    # LongestString->longestString({ arr => [arr-ref-of-strings] }) ==> OBJECT
     # ..........................................................................
     # LongestString constructor
     # --------------------------------------------------------------------------
@@ -57,7 +87,7 @@ package LongestString {
 
         return $self;
 
-    } # END longestString()
+    } # END longestString() ////////////////////////////////////////////////////
 
 
     # &calculate(@array) ==> string
@@ -77,7 +107,7 @@ package LongestString {
             $l = length($e) > length($l) ? $e : $l;
         }
         return $l;
-    } # END calculate()
+    } # END calculate() ////////////////////////////////////////////////////////
 
 
     # self->cc() ==> string
@@ -85,15 +115,15 @@ package LongestString {
     # ..........................................................................
     # Attribute accessor for longest string
     # --------------------------------------------------------------------------
-    # @_ := ()
-    #    := (string)
+    # @_ := ()		getter of 'longest' instance variable
+    #    := (string)	setter of 'longest' instance variable
     # ==> string
     # ==========================================================================
     sub cc {
         my $self = shift;
         $self->{longest} = shift if @_;
         return $self->{longest};
-    } # END cc()
+    } # END cc() ///////////////////////////////////////////////////////////////
 
 
     # self->arr() ==> array of strings
@@ -101,15 +131,15 @@ package LongestString {
     # ..........................................................................
     # Attribute accessor for input array
     # --------------------------------------------------------------------------
-    # @_ := ()
-    #    := (string-arr)
-    # ==> array of strings representing input
+    # @_ := ()			getter of 'arr' instance variable
+    #    := (string-arr)	setter of 'arr' instance variable
+    # ==> array of strings representing input array
     # ==========================================================================
     sub params {
         my $self = shift;
         $self->{arr} = [@_] if @_;
         return exists $self->{arr} ? @{$self->{arr}} : ();
-    } # END arr()
+    } # END arr() //////////////////////////////////////////////////////////////
 
 
     # self->eq(string) ==> 0 | 1
@@ -124,7 +154,7 @@ package LongestString {
         return 1 unless $self;
         my $str = shift;
         return $self->cc() eq $str;
-    } # END eq()
+    } # END eq() ///////////////////////////////////////////////////////////////
 
 
     # self->inspect(verbosity) ==> message
@@ -150,7 +180,7 @@ package LongestString {
         } elsif ( $verbosity eq '-V') {
             Data::Printer::p $self;
         }
-    } # END inspect()
+    } # END inspect() //////////////////////////////////////////////////////////
 
 
     # $class->usage() --> message
@@ -164,7 +194,7 @@ package LongestString {
         print STDERR "USAGE: longestString str_1 str_2 ... str_n [-v | -V] [-h | --help]\n";
     } # END usage()
 
-} # END LongestString
+} # END LongestString //////////////////////////////////////////////////////////
 
 
 # main(@ARGV) --> message
@@ -183,7 +213,7 @@ sub main {
     my $answer = LongestString->longestString( {arr => [@ARGV]} );
     $answer->inspect( $verbosity );
 
-} # END main()
+} # END main() /////////////////////////////////////////////////////////////////
 
 
 &main() unless caller();
