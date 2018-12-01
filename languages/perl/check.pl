@@ -4,15 +4,26 @@
 # =============================================================================
 # CREATED: 2018-05-19
 # UPDATED: 2018-11-30
-# VERSION: 3.1.2
+# VERSION: 3.1.3
 # AUTHOR : wlharvey4
 # ABOUT  : Test script for perl Perl code challenges
 # USAGE  : ./check <code-challenge>
 # NOTES: : While coding the challenges in OO paradigm might be cumbersome in
-#	   Perl, yet there are real benefits to doing9 so, i.e., no aliasing of
+#	   Perl, yet there are real benefits to doing so, i.e., no aliasing of
 #	   typeglobs is necessary, and therefore no need for 'no strict refs',
 #	   nor for a global variable and checking for equality is easy and
 #	   natural.
+#        : However, there is great uncertainty as to the API that 'check.pl'
+#          expects; need to clearly document the necessary API to make it easy
+#          to create new Perl OO challenges.
+# CC-API : + Package name should be capitalized form of code challenge name;
+#          + Needs to have full accessors for the 'params' and 'cc' methods; so
+#            - codechall->params(hash-ref), where hash-ref internals comes from
+#              the JSON 'params' element;
+#            - codechall->cc(result), where 'result' is equivalent to the JSON
+#	       'expected' element;
+#          + Needs to have an 'eq(result)' method, where 'result' is equivalent
+#            to the JSON 'expected' element;
 # CHANGE-LOG:
 # .............................................................................
 # v1.1.0 2018-07-04
@@ -47,6 +58,9 @@
 # -- changed to perl from perl5;
 # -- wrapped 'isa' check for Math::BigInt in eval to avoid error thrown when
 #    'result' is undefined.
+# .............................................................................
+# v3.1.3 2018-11-30T21:30
+# -- Added API information
 # -----------------------------------------------------------------------------
 
 # pragmas
