@@ -140,3 +140,5 @@ every language.
 * [Simple Programming Problems](https://adriann.github.io/programming_problems.html)
 
 * [Rosetta Code](https://www.rosettacode.org/wiki/Rosetta_Code)
+
+* [Coffee Break Python](https://app.finxter.com/learn/computer/science/)
