@@ -33,7 +33,7 @@ example, if you want to work on a code challenge called `fizzbuzz`,
 then you would create the following directory structure:
 
     Code-Challenges-Intl/challenges/fizzbuzz
-    
+
 2. Second, create a JSON file in this directory that contains input
 arguments and expected results from these arguments; the main
 structure of the JSON file is an array, with each array entry being an
@@ -79,6 +79,8 @@ program `check` will report failed tests, and final statistics for
 every language.
 
 ## Interesting Articles
+* [Nick Coghlan 2015-10-11: 27 languages to improve your Python](http://www.curiousefficiency.org/posts/2015/10/languages-to-improve-your-python.html)
+
 * [Learn Every Language](https://blog.bradfieldcs.com/in-2017-learn-every-language-59b11f68eee)
 
 * [Why logic puzzles make good interview questions](https://imranontech.com/2007/01/10/why-logic-puzzles-make-good-interview-questions/)
