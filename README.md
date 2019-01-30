@@ -127,6 +127,12 @@ every language.
 
 * [Learn Programming Language from Diving into Source Code](http://stardiviner.github.io/Blog/Learn-Programming-Language-from-Diving-into-Source-Code.html)
 
+* [The World's Most Misunderstood Programming Language Has Become the World's Most Popular Programming Language](http://www.crockford.com/javascript/popular.html) Douglas Crockford
+> The second way that a language becomes important is by becoming popular.
+
+* [JavaScript: The World's Most Misunderstood Programming Language](http://www.crockford.com/javascript/javascript.html) Douglas Crockford
+> ...JavaScript has more in common with functional languages like Lisp or Scheme than with C or Java.
+
 ## Resources
 * [Programming Interviews Exposed: Secrets to Landing Your Next Job
   by by John Mongan (Author), Noah Kindler (Author)](https://www.amazon.com/Programming-Interviews-Exposed-Secrets-Landing/dp/0471383562)
